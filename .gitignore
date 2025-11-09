@@ -1,2 +1,3 @@
 # Ignore FrreCad tmp files
 *.FCStd.*
+*.FCBak*
