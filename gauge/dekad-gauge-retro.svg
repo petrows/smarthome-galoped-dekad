@@ -29,15 +29,15 @@
      inkscape:document-units="mm"
      showgrid="true"
      showguides="true"
-     inkscape:zoom="2.8284272"
-     inkscape:cx="167.05398"
-     inkscape:cy="169.1753"
+     inkscape:zoom="4.0000001"
+     inkscape:cx="245.62499"
+     inkscape:cy="185.625"
      inkscape:window-width="3834"
      inkscape:window-height="2097"
      inkscape:window-x="0"
      inkscape:window-y="22"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      inkscape:lockguides="true">
     <inkscape:grid
        type="xygrid"
@@ -582,13 +582,14 @@
        inkscape:transform-center-y="-1.0879907"
        inkscape:label="Corners"
        r="44.806519" />
-    <circle
-       style="fill:none;stroke:#1a1a1a;stroke-width:0.122902"
+    <ellipse
+       style="fill:none;stroke:#1a1a1a;stroke-width:0.172063"
        id="path960"
        cx="50"
        cy="50"
-       r="2.4385493"
-       inkscape:label="Center" />
+       inkscape:label="Center"
+       rx="3.4139686"
+       ry="3.4139683" />
     <path
        style="fill:none;stroke:#1a1a1a;stroke-width:0.264583px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 50,93 v 1.999999"
@@ -733,7 +734,7 @@
        y="0"><tspan
          x="136.08951"
          y="271.73371"
-         id="tspan2477">4</tspan></text>
+         id="tspan3136">4</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-14.440053,-12.804756)"
@@ -743,7 +744,7 @@
        y="0"><tspan
          x="136.07649"
          y="271.73371"
-         id="tspan2479">6</tspan></text>
+         id="tspan3138">6</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,25.635662,4.0060147)"
@@ -753,7 +754,7 @@
        inkscape:transform-center-y="-0.0090300384"><tspan
          x="120.94531"
          y="271.73371"
-         id="tspan2481">22</tspan></text>
+         id="tspan3140">22</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-15.415249,-28.804756)"
@@ -763,7 +764,7 @@
        y="0"><tspan
          x="135.67284"
          y="271.73371"
-         id="tspan2483">8</tspan></text>
+         id="tspan3142">8</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-7.2163416,-41.073911)"
@@ -773,7 +774,7 @@
        y="0"><tspan
          x="129.70929"
          y="271.73371"
-         id="tspan2485">10</tspan></text>
+         id="tspan3144">10</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,7.9999944,-48.993985)"
@@ -783,7 +784,7 @@
        y="0"><tspan
          x="130.44497"
          y="271.73371"
-         id="tspan2487">12</tspan></text>
+         id="tspan3146">12</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,22.692708,-45.993985)"
@@ -793,7 +794,7 @@
        y="0"><tspan
          x="130.36033"
          y="271.73371"
-         id="tspan2489">14</tspan></text>
+         id="tspan3148">14</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,33.999994,-34.993985)"
@@ -803,7 +804,7 @@
        y="0"><tspan
          x="130.34731"
          y="271.73371"
-         id="tspan2491">16</tspan></text>
+         id="tspan3150">16</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,37.999994,-19.993985)"
@@ -813,7 +814,7 @@
        y="0"><tspan
          x="129.94367"
          y="271.73371"
-         id="tspan2493">18</tspan></text>
+         id="tspan3152">18</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,33.999994,-5.9939853)"
@@ -823,7 +824,7 @@
        y="0"><tspan
          x="127.99054"
          y="271.73371"
-         id="tspan2495">20</tspan></text>
+         id="tspan3154">20</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -840,11 +841,11 @@
        y="0"><tspan
          x="165.65231"
          y="137.44596"
-         id="tspan2501"><tspan
+         id="tspan3160"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan2497">CO</tspan><tspan
+           id="tspan3156">CO</tspan><tspan
            style="font-size:65%;baseline-shift:sub"
-           id="tspan2499">2</tspan></tspan></text>
+           id="tspan3158">2</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-4.7657797e-5,6.4581037)"
@@ -854,7 +855,7 @@
        y="0"><tspan
          x="168.77598"
          y="311.98504"
-         id="tspan2503">petro.ws</tspan></text>
+         id="tspan3162">petro.ws</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-4.7816733e-5,-23.813148)"
@@ -864,7 +865,7 @@
        y="0"><tspan
          x="150.92969"
          y="241.20701"
-         id="tspan2505">GALOPED</tspan></text>
+         id="tspan3164">GALOPED</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,2.1056542e-4,17.186547)"
@@ -874,7 +875,7 @@
        y="0"><tspan
          x="171.67871"
          y="222.31052"
-         id="tspan2507">x100</tspan></text>
+         id="tspan3166">x100</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:4.23333px;line-height:1.25;font-family:Georgia;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#333333;fill-opacity:1;stroke:none;stroke-width:0.264583;-inkscape-font-specification:Georgia;font-stretch:normal;font-variant:normal"
