@@ -1,0 +1,2 @@
+Filament resistor: 220R
+
