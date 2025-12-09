@@ -32,3 +32,17 @@ var co2Int = int(value)
  var drivePos = 180 + ((co2Int - 400) * 2)
  print("DrivePos: ", drivePos)
  tasmota.cmd("GaugePercent " + drivePos)
+
+
+
+ ```
+var drivePos = 37
+tasmota.cmd("GaugePercent " + str(drivePos))
+var strip = Leds(40, gpio.pin(gpio.WS2812))
+var color = 0x00FF00
+strip.clear()
+for i: 22 .. 28
+    strip.set_pixel_color(i, color)
+end
+strip.show()
+ ```
