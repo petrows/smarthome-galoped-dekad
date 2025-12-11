@@ -11,3 +11,5 @@ def co2_update(value, trigger)
 end
 
 tasmota.add_rule("S8#CarbonDioxide", co2_update)
+
+

@@ -41,8 +41,12 @@ tasmota.cmd("GaugePercent " + str(drivePos))
 var strip = Leds(40, gpio.pin(gpio.WS2812))
 var color = 0x00FF00
 strip.clear()
-for i: 22 .. 28
+for i: 15 .. 25
     strip.set_pixel_color(i, color)
 end
 strip.show()
+ ```
+
+ ```
+
  ```
