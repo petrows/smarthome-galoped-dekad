@@ -1,4 +1,5 @@
 # MB85RC FRAM raw test (minimal)
+# Tasmota berry implementation to write and read 2 bytes from FRAM chip MB85RC04V
 import string
 
 var dev = 0x50
