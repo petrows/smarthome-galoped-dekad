@@ -49,8 +49,9 @@ var last_gauge_pos = fram_read_u16(addr_pos)
 if last_gauge_pos
  print("FRAM gauge pos read:", last_gauge_pos)
 end
-# Call Reset option from saved position
+# Call Reset option from saved position, and save zero
 tasmota.cmd("GaugeZero " + str(last_gauge_pos))
+fram_write_u16(addr_pos, 0)
 # Function to update Gauge position on CO2 change
 def co2_update(value, trigger)
  var drivePos = 180 + ((int(value) - 400) * 2)
