@@ -35,7 +35,14 @@
 \*****************************************************************************************************/
 
  // [I2cDriver43] Enable AHT20/AM2301B instead of AHT1x humidity and temperature sensor (I2C address 0x38) (+0k8 code)
-#define USE_AHT2x
+#ifndef USE_AHT2x
+    #define USE_AHT2x
+#endif
+
+// [I2cDriver10] Enable BMP085/BMP180/BMP280/BME280 sensors (I2C addresses 0x76 and 0x77) (+4k4 code)
+#ifndef USE_BMP
+    #define USE_BMP
+#endif
 
 // Add support for VID6608 Automotive analog gauge driver (+0k7 code)
 #define USE_VID6608
