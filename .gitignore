@@ -1,3 +1,10 @@
 # Ignore FrreCad tmp files
 *.FCStd.*
 *.FCBak*
+
+manual/*.log
+manual/*.aux
+manual/*.out
+# This is generated artifact
+manual/manual.pdf
+
