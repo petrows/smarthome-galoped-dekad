@@ -1,0 +1,24 @@
+name: PlatformIO CI
+on: [push]
+jobs:
+  build:
+    runs-on: self-hosted
+    container:
+      image: petrows/arduino-vid6608:eb34877
+      options: -u 2025:2025
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build PlatformIO examples
+        run: |
+            echo "::group::pio ci"
+            # We have to enforce $HOME here, to skip runtime installation
+            # See Dockerfile for static environment
+            export HOME=/opt/home
+            export CI=true
+            git submodule init
+            git submodule update --init --recursive
+            cd firmware/tasmota
+            # Copy config overrides
+            cp ../user_config_override.h tasmota/
+            platformio run -e tasmota32
+            echo "::endgroup::"
