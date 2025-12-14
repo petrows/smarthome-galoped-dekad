@@ -1,0 +1,37 @@
+name: User Manual
+on:
+  push:
+    paths:
+      - '.github/workflows/manual.yaml'
+      - 'manual/**'
+    branches:
+      - master
+  pull_request:
+    paths:
+      - '.github/workflows/manual.yaml'
+      - 'manual/**'
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: self-hosted
+    container:
+      image: ghcr.io/petrows/latex:v1
+      options: -u 2025:2025
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build manual
+        run: |
+            echo "::group::latex build"
+            # See Dockerfile for static environment
+            export CI=true
+            cd manual
+            xelatex manual.tex
+            xelatex manual.tex
+            xelatex manual.tex
+            echo "::endgroup::"
+      - name: Archive manual file
+        uses: actions/upload-artifact@v4
+        with:
+          name: galoped-dekad-manual.pdf
+          path: manual/manual.pdf
