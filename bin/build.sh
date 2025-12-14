@@ -19,6 +19,9 @@ cp ../user_config_override.h tasmota/
 mkdir -p tasmota/user/
 cp ../user_config_hw_${VARIANT}.h tasmota/user/user_config_hw.h
 
+# Build safeboot binary
+platformio run -e tasmota32-safeboot
+
 # Build firmware
 platformio run -e tasmota32
 

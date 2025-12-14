@@ -2,11 +2,13 @@ name: PlatformIO CI
 on:
   push:
     paths:
+      - 'bin/build.sh'
       - 'firmware/**'
     branches:
       - master
   pull_request:
     paths:
+      - 'bin/build.sh'
       - 'firmware/**'
     branches:
       - master
