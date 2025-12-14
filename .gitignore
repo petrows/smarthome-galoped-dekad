@@ -2,11 +2,12 @@
 *.FCStd.*
 *.FCBak*
 
-firmware/*.tar.gz
+/tmp/
 
-manual/*.log
-manual/*.aux
+/firmware/galoped-dekad-firmware-*
+
+/manual/*.log
+/manual/*.aux
 manual/*.out
 # This is generated artifact
-manual/manual.pdf
-
+/manual/manual.pdf

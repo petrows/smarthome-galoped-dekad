@@ -1,13 +1,119 @@
-\documentclass[letter,12pt]{article}
+\documentclass[11pt,a5paper]{article}
+\usepackage{tabularx}
 \usepackage{graphicx}
 \usepackage{pdfpages}
+\usepackage{dashundergaps}
+\usepackage{geometry}
+% \geometry{
+%     a5paper,
+%     left=10mm,
+%     top=10mm,
+%  }
+
+%\setlength{\tabcolsep}{2pt}
+\renewcommand{\arraystretch}{1.5}
+
+\newcolumntype{b}{X}
+\newcolumntype{s}{>{\hsize=.5\hsize}X}
+
+\title{Galoped-dekad user manual}
+\date{\today}
+
 \begin{document}
+\maketitle
 
-\title{VID6608 Automotive Analog Gauge Driver Integration}
+\bigskip
+\small{Version 1.0}
 
-\includegraphics[width=\textwidth]{assets/galoped-dekad-view.pdf}
+\newpage
 
-\begin{paragraph}
-To enable support for the VID6608 automotive analog gauge driver, add the following lines to your
-\end{paragraph}
+\section{Introduction}
+
+\textbf{Galoped-dekad} is a smart home controller based on the popular ESP32
+microcontroller. It is designed to be a versatile and user-friendly solution for
+home automation enthusiasts. Device features include:
+
+\begin{itemize}
+\item Use analog automotive gauges to display CO2 level;
+\item Wi-Fi connectivity for remote control and monitoring;
+\item User-friendly web interface for easy configuration;
+\item MQTT support for integration with other smart home systems;
+\item All other features provided by Tasmota firmware;
+\end{itemize}
+
+Your device specs:
+
+\begin{itemize}
+\item Microcontroller: ESP32;
+\item CO2 Sensor: SenseAir S8;
+\item Gauge Driver: VID6608;
+\item Power Supply: 5V USB-C;
+\item Additional Sensors: AHT20 (Temperature and Humidity), BMP280 (Pressure);
+\end{itemize}
+
+\newpage
+
+\section{Your unique device}
+
+Your device is build epsecially for you, each version is assembled and configured
+individually. Therefore, your device may differ from the standard description in
+some aspects. Your device is build as follows:
+
+\bigskip
+
+\begin{tabularx}{\textwidth}{lX}
+Build for: & \dotfill \\
+Build date: & \dotfill \\
+Serial number: & \dotfill \\
+MAC Address: & \dotfill \\
+Front panel: & \dotfill \\
+Backlight: & \dotfill \\
+\end{tabularx}
+
+\bigskip
+
+Additional notes:
+
+\newpage
+
+\section{Device control}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{assets/galoped-dekad-view.pdf}
+    \caption{Device view with controls and sensors}
+    \label{fig:DeviceView}
+\end{figure}
+
+\subsection{Initial configuration}
+
+New device will start in Access Point mode. Connect to the Wi-Fi network
+\textbf{Tasmota-xxxx} (where \textbf{xxxx} are the last 4 digits of the MAC address).
+
+There you will be promted to input connection details for your Wi-Fi network. When done,
+device will reboot and connect to your Wi-Fi network. You can find the device IP address
+in your router DHCP client list. Open a web browser and navigate to the device IP address
+to access the web interface.
+
+\subsection{Settings reset}
+
+To reset the device, hold the \textbf{Backlight} button for 45 seconds until the device restarts.
+This will reset all settings to factory defaults. Use "Initial configuration" section to reconnect
+to your Wi-Fi network.
+
+\subsection{Device settings}
+
+Device uses default Tasmota web interface. For detailed information on how to use
+the web interface, please refer to the official Tasmota documentation at
+\texttt{https://tasmota.github.io/docs/}.
+\medskip
+
+Device can be connected to various smart home systems using MQTT protocol. For detailed information on how to
+configure MQTT settings, please refer to the official Tasmota documentation at
+\texttt{https://tasmota.github.io/docs/MQTT/}.
+\medskip
+
+Device also supports offline mode: without any configuration it will work as a simple CO2 meter with gauge display.
+
+
 \end{document}
