@@ -4,24 +4,28 @@ jobs:
   build:
     runs-on: self-hosted
     container:
-      image: petrows/arduino-vid6608:eb34877
+      image: ghcr.io/petrows/platformio:v3
       options: -u 2025:2025
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
           token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+          key: ${{ runner.os }}-pio
       - name: Build PlatformIO examples
         run: |
             echo "::group::pio ci"
-            # We have to enforce $HOME here, to skip runtime installation
             # See Dockerfile for static environment
-            export HOME=/opt/home
             export CI=true
-            ls -la firmware
-            ls -la firmware/tasmota
+            ls -la ~/.platformio/.cache || true
             cd firmware/tasmota
             # Copy config overrides
             cp ../user_config_override.h tasmota/
             platformio run -e tasmota32
+            ls -la ~/.platformio/.cache || true
             echo "::endgroup::"
