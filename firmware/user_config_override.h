@@ -34,19 +34,28 @@
  *   - All parameters can be persistent changed online using commands via MQTT, WebConsole or Serial.
 \*****************************************************************************************************/
 
- // [I2cDriver43] Enable AHT20/AM2301B instead of AHT1x humidity and temperature sensor (I2C address 0x38) (+0k8 code)
+// Required features for this project:
+// [I2cDriver43] Enable AHT20/AM2301B instead of AHT1x humidity and temperature sensor (I2C address 0x38) (+0k8 code)
 #ifndef USE_AHT2x
     #define USE_AHT2x
 #endif
-
 // [I2cDriver10] Enable BMP085/BMP180/BMP280/BME280 sensors (I2C addresses 0x76 and 0x77) (+4k4 code)
 #ifndef USE_BMP
     #define USE_BMP
 #endif
-
+// Add support for SenseAir K30, K70 and S8 CO2 sensor (+2k3 code)
+#ifndef USE_SENSEAIR
+    #define USE_SENSEAIR
+#endif
 // Add support for VID6608 Automotive analog gauge driver (+0k7 code)
 #define USE_VID6608
 // Reset VID6608 on init (default: true), change if you control this manually
 #define VID6608_RESET_ON_INIT false
+
+// Template defaults, apply on flash reset.
+// You may skip this templay application, in this case please apply manually (see README.md)
+#define USER_TEMPLATE "{\"NAME\":\"Galoped-dekad\",\"GPIO\":[1,1,1,1,1,1,1,1,1,1,416,1,1600,1632,1,1,0,640,608,1,0,1,12160,12192,0,0,0,0,1,1,32,1,1,0,0,1],\"FLAG\":0,\"BASE\":1}"
+// Activate template on reset/flash new
+#define MODULE USER_MODULE
 
 #endif  // _USER_CONFIG_OVERRIDE_H_

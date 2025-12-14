@@ -4,7 +4,8 @@ jobs:
   build:
     runs-on: self-hosted
     container:
-      image: petrows/arduino-vid6608:eb34877
+      #image: petrows/arduino-vid6608:eb34877
+      image: ghcr.io/petrows/github-linters:v5
       options: -u 2025:2025
     steps:
       - uses: actions/checkout@v4
