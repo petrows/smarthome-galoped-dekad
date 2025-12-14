@@ -14,7 +14,7 @@ jobs:
   build:
     runs-on: self-hosted
     container:
-      image: ghcr.io/petrows/platformio:v3
+      image: ghcr.io/petrows/platformio:v4
       options: -u 2025:2025
     strategy:
       matrix:

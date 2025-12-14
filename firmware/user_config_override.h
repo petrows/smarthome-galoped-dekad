@@ -54,6 +54,7 @@
 
 // Enable WS2812 leds number (any HW model)
 #undef WS2812_LEDS
+// If RGB backlight is used, it will have 40 LED's
 #define WS2812_LEDS 40
 
 // Template defaults, apply on flash reset.0
