@@ -2,6 +2,8 @@
 *.FCStd.*
 *.FCBak*
 
+firmware/*.tar.gz
+
 manual/*.log
 manual/*.aux
 manual/*.out

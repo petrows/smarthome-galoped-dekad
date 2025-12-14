@@ -1,5 +1,15 @@
 name: PlatformIO CI
-on: [push]
+on:
+  push:
+    paths:
+      - 'firmware/**'
+    branches:
+      - master
+  pull_request:
+    paths:
+      - 'firmware/**'
+    branches:
+      - master
 jobs:
   build:
     runs-on: self-hosted
@@ -14,7 +24,7 @@ jobs:
         with:
           submodules: true
           token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ~/.cache/pip
@@ -25,19 +35,10 @@ jobs:
             echo "::group::pio ci"
             # See Dockerfile for static environment
             export CI=true
-            cd firmware/tasmota
-            # Copy config overrides
-            cp ../user_config_override.h tasmota/
-            # Copy HW version config
-            cp ../user_config_hw_${{ matrix.model }}.h tasmota/user_config_hw.h
-            # Build firmware
-            platformio run -e tasmota32
-            # Pack result firmware.bin
-            cp .pio/build/tasmota32/firmware.bin galoped-dekad-firmware-${{ matrix.model }}.bin
-            tar -czf galoped-dekad-firmware-${{ matrix.model }}.tar.gz galoped-dekad-firmware-${{ matrix.model }}.bin
+            ./bin/build.sh ${{ matrix.model }}
             echo "::endgroup::"
       - name: Archive firmware file
         uses: actions/upload-artifact@v4
         with:
           name: galoped-dekad-firmware
-          path: galoped-dekad-firmware-${{ matrix.model }}.tar.gz
+          path: firmware/galoped-dekad-firmware-${{ matrix.model }}.tar.gz
