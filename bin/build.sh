@@ -13,11 +13,11 @@ echo "Building firmware for variant: $VARIANT"
 cd firmware/tasmota
 
 # Build safeboot binary (if CI)
-if [ "$CI" = "true" ]; then
-    rm -rf tasmota/user
-    rm -rf tasmota/user_config_override.h
-    platformio run -e tasmota32-safeboot
-fi
+# if [ "$CI" = "true" ]; then
+#     rm -rf tasmota/user
+#     rm -rf tasmota/user_config_override.h
+#     platformio run -e tasmota32-safeboot
+# fi
 
 # Copy config overrides
 cp ../user_config_override.h tasmota/
