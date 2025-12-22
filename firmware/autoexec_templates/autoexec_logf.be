@@ -32,8 +32,8 @@ def get_logf_angle(value)
  return nil
 end
 
-# Function to update drive position
-def set_drive_pos(value)
+# Function to get drive position from value
+def get_drive_pos(value)
  var pos = 0
  if value < 400
   value = 400
@@ -48,6 +48,5 @@ def set_drive_pos(value)
  else
   pos = int(get_logf_angle(value) * 12.0)
  end
- print("Setting gauge pos to:", pos)
- tasmota.cmd("GaugeSet " + str(int(pos)))
+ return int(pos)
 end
