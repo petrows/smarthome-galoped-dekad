@@ -82,9 +82,9 @@ See predefined templates in [firmware configuration files](firmware).
 
 Physical parts are designed in FreeCAD and provided as-is with STL files to print:
 
-![FreeCAD 3d view 1](article/assets/case-3d-1.jpg)
+![FreeCAD 3d view 1](article/assets/case-3d-1-crop.jpg)
 
-![FreeCAD 3d view 2](article/assets/case-3d-2.jpg)
+![FreeCAD 3d view 2](article/assets/case-3d-2-crop.jpg)
 
 ## Gallery
 
