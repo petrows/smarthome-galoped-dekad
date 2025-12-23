@@ -1,8 +1,6 @@
 # Function for version with linear scale
 # Dead zone: 15°
 # Normal range: 15° to 315°, values 400 to 2200
-
-# Function to get drive position from value
 def get_drive_pos(value)
  if value < 400
   value = 400

@@ -1,3 +1,9 @@
+# This is autoexec script for CO2 Gauge with FRAM persistence
+# Configuration:
+#  Scale: linear
+
+# Functions to read and write FRAM memory
+# to store data during power off
 # Connect and preare i2c FRAM MB85RC04V
 var fram_addr = 0x50
 var wire = tasmota.wire_scan(fram_addr)
@@ -44,6 +50,22 @@ def fram_read_u16(addr)
  var value = (value_hi << 8) | value_lo
  return value
 end
+
+# Function for version with linear scale
+# Dead zone: 15°
+# Normal range: 15° to 315°, values 400 to 2200
+def get_drive_pos(value)
+ if value < 400
+  value = 400
+ end
+ if value > 2200
+  value = 2200
+ end
+ # Dead zone (15*12 steps) + linear (300*12 steps / 1800 units range)
+ return 180 + ((int(value) - 400) * 2)
+end
+
+# ------------------- MAIN CODE ------------------
 # Read last gauge position from FRAM
 var last_gauge_pos = fram_read_u16(addr_pos)
 if last_gauge_pos
@@ -54,7 +76,8 @@ tasmota.cmd("GaugeZero " + str(last_gauge_pos))
 fram_write_u16(addr_pos, 0)
 # Function to update Gauge position on CO2 change
 def co2_update(value, trigger)
- var drivePos = 180 + ((int(value) - 400) * 2)
+ # Calculate the current desired drive position (linear or logarithmic)
+ var drivePos = get_drive_pos(value)
  if last_gauge_pos != drivePos
   tasmota.cmd("GaugeSet " + str(drivePos))
   last_gauge_pos = drivePos
