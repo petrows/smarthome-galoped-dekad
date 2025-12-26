@@ -10,10 +10,10 @@ var log_v = [1000,1013,1026,1039,1053,1066,1080,1094,1108,1123,1137,1152,1167,11
 
 def get_logf_angle(value)
  if value < log_v[0]
-  return log_a[0]
+  return log_v[0]
  end
  if value > log_v[-1]
-  return log_a[-1]
+  return log_v[-1]
  end
 
  # Find next value greater than we
