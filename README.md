@@ -86,6 +86,10 @@ Physical parts are designed in FreeCAD and provided as-is with STL files to prin
 
 ![FreeCAD 3d view 2](article/assets/case-3d-2-crop.jpg)
 
+## Assembly
+
+See: [Assembly instructions](doc/assembly.md).
+
 ## Gallery
 
 ![Device](article/assets/device-promo-2.jpg)
