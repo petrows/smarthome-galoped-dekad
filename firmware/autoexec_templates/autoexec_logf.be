@@ -43,8 +43,8 @@ def get_drive_pos(value)
  end
  # Linear scale?
  if value <= 1000
-  # Dead zone (5*12 steps) + linear (185*12 steps / 600 units range)
-  pos = 60 + (3.7 * (real(value) - 400.0))
+  # Dead zone (7*12 steps) + linear (180*12 steps / 600 units range)
+  pos = 84 + (3.6 * (real(value) - 400.0))
  else
   pos = int(get_logf_angle(value) * 12.0)
  end

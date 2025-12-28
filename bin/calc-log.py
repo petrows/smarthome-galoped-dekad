@@ -1,3 +1,5 @@
+#!/bin/env python3
+
 import math
 
 def log_scale_value(angle, v_min, v_max, angle_min, angle_max):
@@ -57,8 +59,8 @@ def log_scale_angle(v, v_min, v_max, angle_min, angle_max):
 
     return angle
 
-a_min = 190
-a_max = 315
+a_min = 180 + 5
+a_max = 310
 a_step = 1
 s_min = 1000
 s_max = 5000
