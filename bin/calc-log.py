@@ -59,8 +59,8 @@ def log_scale_angle(v, v_min, v_max, angle_min, angle_max):
 
     return angle
 
-a_min = 180 + 5
-a_max = 310
+a_min = 185
+a_max = 317
 a_step = 1
 s_min = 1000
 s_max = 5000
