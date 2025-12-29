@@ -29,8 +29,8 @@ cp ../user_config_hw_${VARIANT}.h tasmota/user/user_config_hw.h
 # Build firmware
 platformio run -e tasmota32
 
-cp .pio/build/tasmota32/firmware.bin galoped-dekad-firmware-${VARIANT}.bin
-tar -czf ../galoped-dekad-firmware-${VARIANT}.tar.gz galoped-dekad-firmware-${VARIANT}.bin
-rm -rf galoped-dekad-firmware*
+cp .pio/build/tasmota32/firmware.bin ../galoped-dekad-firmware-${VARIANT}.bin
+cd ..
+tar -czf galoped-dekad-firmware-${VARIANT}.tar.gz galoped-dekad-firmware-${VARIANT}.bin
 
 echo "Built firmware: firmware/galoped-dekad-firmware-${VARIANT}.tar.gz"
