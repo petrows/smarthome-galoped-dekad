@@ -15,14 +15,34 @@ on:
     branches:
       - master
 jobs:
+  user-manual:
+    runs-on: self-hosted
+    container:
+      image: ghcr.io/petrows/latex:v1
+      options: -u 2025:2025
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build manual
+        run: |
+            echo "::group::latex build"
+            # See Dockerfile for static environment
+            export CI=true
+            cd manual
+            xelatex manual.tex
+            xelatex manual.tex
+            xelatex manual.tex
+            echo "::endgroup::"
+      - name: Archive manual file
+        uses: actions/upload-artifact@v4
+        with:
+          name: galoped-dekad-manual.pdf
+          path: manual/manual.pdf
+
   build:
     runs-on: self-hosted
     container:
       image: ghcr.io/petrows/platformio:v4
       options: -u 2025:2025
-    strategy:
-      matrix:
-        model: ['rgb', 'retro']
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,10 +59,17 @@ jobs:
             echo "::group::pio ci"
             # See Dockerfile for static environment
             export CI=true
-            ./bin/build.sh ${{ matrix.model }}
+            # Build for each model (RGB and Retro)
+            ./bin/build.sh rgb
+            ./bin/build.sh retro
+            # Build autoexec for each variant (Linear and Logf)
+            ./bin/mk-autoexec.py -t autoexec.be --scale logf -o autoexec-logf.be
+            ./bin/mk-autoexec.py -t autoexec.be --scale linear -o autoexec-linear.be
             echo "::endgroup::"
       - name: Archive firmware file
         uses: actions/upload-artifact@v4
         with:
-          name: galoped-dekad-firmware-${{ matrix.model }}.tar.gz
-          path: firmware/galoped-dekad-firmware-${{ matrix.model }}.tar.gz
+          name: galoped-dekad
+          path: |
+            firmware/galoped-dekad-firmware-*.tar.gz
+            autoexec-*.be
