@@ -29,6 +29,13 @@ External components:
 
 * Metal enclosure and glass is taken from [Ikea Dekad](https://www.ikea.com/de/de/p/dekad-wecker-schwarz-30540479/)
 
+## PCB and Schematics
+
+Made in EasyEDA Web project:
+
+* [MCU board](https://oshwlab.com/petrows/galoped-dekad)
+* [Breakout board for drive](https://oshwlab.com/petrows/galoped-dekad-drive)
+
 ## Firmware
 
 Contains in two parts:
