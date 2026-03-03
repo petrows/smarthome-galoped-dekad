@@ -16,6 +16,8 @@
 \newcolumntype{b}{X}
 \newcolumntype{s}{>{\hsize=.5\hsize}X}
 
+\setlength{\parindent}{0cm}
+
 \title{Galoped-dekad user manual}
 \date{\today}
 
@@ -24,6 +26,8 @@
 
 \bigskip
 \small{Version 1.0}
+
+\newpage
 
 \newpage
 
@@ -47,7 +51,7 @@ Your device specs:
 \item Microcontroller: ESP32;
 \item CO2 Sensor: SenseAir S8;
 \item Gauge Driver: VID6608;
-\item Power Supply: 5V USB-C;
+\item Power Supply: 5V USB-C; \\ \textbf{Only USB-A-to-C cable is supported}
 \item Additional Sensors: AHT20 (Temperature and Humidity), BMP280 (Pressure);
 \end{itemize}
 
@@ -90,6 +94,8 @@ Additional notes:
 New device will start in Access Point mode. Connect to the Wi-Fi network
 \textbf{tasmota-xxxx-nnnn} (where \textbf{xxxx} are the last 4 digits of the MAC address).
 
+\medskip
+
 There you will be promted to input connection details for your Wi-Fi network. When done,
 device will reboot and connect to your Wi-Fi network. You can find the device IP address
 in your router DHCP client list. Open a web browser and navigate to the device IP address
@@ -104,15 +110,35 @@ to your Wi-Fi network.
 \subsection{Device settings}
 
 Device uses default Tasmota web interface. For detailed information on how to use
-the web interface, please refer to the official Tasmota documentation at
-\texttt{https://tasmota.github.io/docs/}.
+the web interface, please refer to the official Tasmota documentation at \texttt{https://tasmota.github.io/docs/} .
+
 \medskip
 
 Device can be connected to various smart home systems using MQTT protocol. For detailed information on how to
-configure MQTT settings, please refer to the official Tasmota documentation at
-\texttt{https://tasmota.github.io/docs/MQTT/}.
+configure MQTT settings, please refer to the official Tasmota documentation at \\
+\texttt{https://tasmota.github.io/docs/MQTT/} .
+
 \medskip
 
 Device also supports offline mode: without any configuration it will work as a simple CO2 meter with gauge display.
+If WiFi settings are not configured, device will switch off Access Point after 5 minutes. To restart configuration
+process, please restart device by unplugging power.
+
+\section{Support and Troubleshooting}
+
+If you have issues with device, please visit GitHub project page for support:
+
+\medskip
+
+\texttt{https://github.com/petrows/smarthome-galoped-dekad}
+
+\medskip
+
+Device is fully open-source and can be modified easily. Project page provides all
+files to compile and modify the firmware.
+
+\medskip
+
+If device does not power on: Device supports the \textbf{USB-A to C} connection for power supply only.
 
 \end{document}
