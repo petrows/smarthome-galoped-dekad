@@ -30,10 +30,10 @@
      showgrid="true"
      showguides="true"
      inkscape:zoom="4.0000001"
-     inkscape:cx="208.37499"
-     inkscape:cy="185.875"
-     inkscape:window-width="1914"
-     inkscape:window-height="2102"
+     inkscape:cx="208.62499"
+     inkscape:cy="166.125"
+     inkscape:window-width="3834"
+     inkscape:window-height="2097"
      inkscape:window-x="0"
      inkscape:window-y="22"
      inkscape:window-maximized="1"
@@ -734,7 +734,7 @@
        y="0"><tspan
          x="136.08951"
          y="271.73371"
-         id="tspan1623">4</tspan></text>
+         id="tspan73822">4</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-14.440053,-12.804756)"
@@ -744,7 +744,7 @@
        y="0"><tspan
          x="136.07649"
          y="271.73371"
-         id="tspan1625">6</tspan></text>
+         id="tspan73824">6</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,25.635662,4.0060147)"
@@ -754,7 +754,7 @@
        inkscape:transform-center-y="-0.0090300384"><tspan
          x="120.94531"
          y="271.73371"
-         id="tspan1627">22</tspan></text>
+         id="tspan73826">22</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-15.415249,-28.804756)"
@@ -764,7 +764,7 @@
        y="0"><tspan
          x="135.67284"
          y="271.73371"
-         id="tspan1629">8</tspan></text>
+         id="tspan73828">8</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-7.2163416,-41.073911)"
@@ -774,7 +774,7 @@
        y="0"><tspan
          x="129.70929"
          y="271.73371"
-         id="tspan1631">10</tspan></text>
+         id="tspan73830">10</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,7.9999944,-48.993985)"
@@ -784,7 +784,7 @@
        y="0"><tspan
          x="130.44497"
          y="271.73371"
-         id="tspan1633">12</tspan></text>
+         id="tspan73832">12</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,22.692708,-45.993985)"
@@ -794,7 +794,7 @@
        y="0"><tspan
          x="130.36033"
          y="271.73371"
-         id="tspan1635">14</tspan></text>
+         id="tspan73834">14</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,33.999994,-34.993985)"
@@ -804,7 +804,7 @@
        y="0"><tspan
          x="130.34731"
          y="271.73371"
-         id="tspan1637">16</tspan></text>
+         id="tspan73836">16</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,37.999994,-19.993985)"
@@ -814,7 +814,7 @@
        y="0"><tspan
          x="129.94367"
          y="271.73371"
-         id="tspan1639">18</tspan></text>
+         id="tspan73838">18</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,33.999994,-5.9939853)"
@@ -824,7 +824,7 @@
        y="0"><tspan
          x="127.99054"
          y="271.73371"
-         id="tspan1641">20</tspan></text>
+         id="tspan73840">20</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -840,11 +840,11 @@
        y="0"><tspan
          x="165.65231"
          y="137.44596"
-         id="tspan1647"><tspan
+         id="tspan73846"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan1643">CO</tspan><tspan
+           id="tspan73842">CO</tspan><tspan
            style="font-size:65%;baseline-shift:sub"
-           id="tspan1645">2</tspan></tspan></text>
+           id="tspan73844">2</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-4.7657797e-5,6.4581037)"
@@ -854,7 +854,7 @@
        y="0"><tspan
          x="168.77598"
          y="311.98504"
-         id="tspan1649">petro.ws</tspan></text>
+         id="tspan73848">petro.ws</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458675,0,0,0.26458333,-5.6610009e-4,-27.815919)"
@@ -864,7 +864,7 @@
        y="0"><tspan
          x="150.92969"
          y="241.20701"
-         id="tspan1651">GALOPED</tspan></text>
+         id="tspan73850">GALOPED</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,2.1056542e-4,17.186547)"
@@ -874,7 +874,7 @@
        y="0"><tspan
          x="171.67871"
          y="222.31052"
-         id="tspan1653">x100</tspan></text>
+         id="tspan73852">x100</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#333333;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -896,7 +896,7 @@
          id="tspan48861"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;text-anchor:middle;fill:#333333;stroke-width:0.264583"
          x="63"
-         y="51">2025</tspan></text>
+         y="51">2026</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1.25;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#333333;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -907,6 +907,6 @@
          id="tspan48997"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:Georgia;-inkscape-font-specification:Georgia;text-align:center;text-anchor:middle;fill:#333333;stroke-width:0.264583"
          x="37.050999"
-         y="50.972439">v 1.0</tspan></text>
+         y="50.972439">v 2.0</tspan></text>
   </g>
 </svg>
