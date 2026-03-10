@@ -30,11 +30,11 @@
      showgrid="true"
      showguides="true"
      inkscape:zoom="4.0000001"
-     inkscape:cx="179.125"
-     inkscape:cy="193.375"
-     inkscape:window-width="3834"
+     inkscape:cx="187.125"
+     inkscape:cy="202.12499"
+     inkscape:window-width="1914"
      inkscape:window-height="2097"
-     inkscape:window-x="0"
+     inkscape:window-x="1920"
      inkscape:window-y="22"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer4"
@@ -579,6 +579,24 @@
        width="113.38583"
        height="18.897638"
        id="rect37547-3" />
+    <rect
+       x="132.28346"
+       y="226.77165"
+       width="113.38583"
+       height="18.897638"
+       id="rect37547-5" />
+    <rect
+       x="132.28346"
+       y="226.77165"
+       width="113.38583"
+       height="18.897638"
+       id="rect37547-3-3" />
+    <rect
+       x="151.18111"
+       y="302.36221"
+       width="75.590553"
+       height="18.897638"
+       id="rect37541-6" />
   </defs>
   <g
      inkscape:label="BG"
@@ -725,7 +743,7 @@
        y="0"><tspan
          x="136.20021"
          y="275.88278"
-         id="tspan2550">0</tspan></text>
+         id="tspan138063">0</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-10.709256,-3.0739114)"
@@ -735,7 +753,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan2552">10</tspan></text>
+         id="tspan138065">10</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,23.487774,6.9260886)"
@@ -745,7 +763,7 @@
        inkscape:transform-center-y="-0.0090300384"><tspan
          x="120.94531"
          y="275.88278"
-         id="tspan2554">100</tspan></text>
+         id="tspan138067">100</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-16.519087,-19.073911)"
@@ -755,7 +773,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan2556">20</tspan></text>
+         id="tspan138069">20</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-13.450185,-34.073911)"
@@ -765,7 +783,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan2558">30</tspan></text>
+         id="tspan138071">30</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-3.0000055,-46.993985)"
@@ -775,7 +793,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan2560">40</tspan></text>
+         id="tspan138073">40</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,12.491938,-52.073911)"
@@ -785,7 +803,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan2562">50</tspan></text>
+         id="tspan138075">50</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,27.577376,-47.073911)"
@@ -795,7 +813,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan2564">60</tspan></text>
+         id="tspan138077">60</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,38.342687,-34.073911)"
@@ -805,7 +823,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan2566">70</tspan></text>
+         id="tspan138079">70</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,41.582888,-19.073911)"
@@ -815,7 +833,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan2568">80</tspan></text>
+         id="tspan138081">80</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,34.999994,-2.9939853)"
@@ -825,7 +843,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan2570">90</tspan></text>
+         id="tspan138083">90</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -836,58 +854,33 @@
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-4.7816733e-5,35.466314)"
        id="text37526"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:1.25;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37528);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37528);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
        x="34.917187"
        y="0"><tspan
          x="173.77344"
-         y="141.8596"
-         id="tspan2574"><tspan
-           style="font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:center;text-anchor:middle"
-           id="tspan2572">%</tspan></tspan></text>
-    <text
-       xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,-4.7657797e-5,6.4581037)"
-       id="text37539"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.6667px;line-height:1.25;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono';text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37541);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
-       x="29.429688"
-       y="0"><tspan
-         x="163.37231"
-         y="311.85232"
-         id="tspan2576">petro.ws</tspan></text>
-    <text
-       xml:space="preserve"
-       transform="matrix(0.26458963,0,0,0.26458333,-9.9973695e-4,-27.857256)"
-       id="text37545"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:1.25;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono';text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37547);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
-       x="37.894531"
-       y="0"><tspan
-         x="155.37109"
-         y="241.00793"
-         id="tspan2578">GALOPED</tspan></text>
+         y="141.69922"
+         id="tspan138087"><tspan
+           style="text-align:center;text-anchor:middle"
+           id="tspan138085">%</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458963,0,0,0.26458333,-0.00123837,-0.7666795)"
        id="text37545-6"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:1.25;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono';text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37547-3);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37547-3);display:none;fill:#ffffff;fill-opacity:1;stroke:none"
        x="37.894531"
-       y="0"><tspan
-         x="145.76953"
-         y="241.00793"
-         id="tspan2582"><tspan
-           style="text-anchor:middle"
-           id="tspan2580">PRINT JOB</tspan></tspan></text>
+       y="0" />
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,2.1056542e-4,17.186547)"
        id="text37551"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:1.25;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono';text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37553);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37553);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
        x="16.945312"
        y="0"><tspan
          x="170.07812"
-         y="241.00793"
-         id="tspan2586"><tspan
-           dx="0 9.6015625 9.6015625 9.6015625"
-           id="tspan2584">x100</tspan></tspan></text>
+         y="240.92773"
+         id="tspan138091"><tspan
+           dx="0 9.46875 10.179688 10.179688"
+           id="tspan138089">x100</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;line-height:1.25;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;display:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -921,5 +914,42 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono';text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.264583"
          x="37.050999"
          y="50.972439">v 2.0</tspan></text>
+    <g
+       id="g453"
+       transform="translate(-2.3863213e-4,-0.95589216)"
+       style="fill:#ffffff;stroke:none">
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458963,0,0,0.26458333,-9.9973695e-4,-27.857256)"
+         id="text37545"
+         style="font-style:normal;font-weight:normal;font-size:16px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37547-5);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
+         x="37.894531"
+         y="0"><tspan
+           x="150.29688"
+           y="241.18356"
+           id="tspan138093">GALOPED</tspan></text>
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458963,0,0,0.26458333,-9.9972263e-4,-22.857255)"
+         id="text37545-6-5"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.9999px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:center;letter-spacing:2.99996px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37547-3-3);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
+         x="37.894531"
+         y="0"><tspan
+           x="152.8989"
+           y="233.84952"
+           id="tspan138097"><tspan
+             style="text-anchor:middle"
+             id="tspan138095">KARLSRUHE</tspan></tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-4.8127706e-5,6.4580958)"
+       id="text37539"
+       style="font-style:normal;font-weight:normal;font-size:10.6667px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37541-6);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
+       x="29.429688"
+       y="0"><tspan
+         x="168.82025"
+         y="311.96941"
+         id="tspan138099">petro.ws</tspan></text>
   </g>
 </svg>
