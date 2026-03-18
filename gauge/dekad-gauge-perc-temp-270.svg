@@ -30,10 +30,10 @@
      showgrid="true"
      showguides="true"
      inkscape:zoom="2.8284272"
-     inkscape:cx="244.12861"
-     inkscape:cy="151.85118"
-     inkscape:window-width="3834"
-     inkscape:window-height="2097"
+     inkscape:cx="183.31743"
+     inkscape:cy="96.69685"
+     inkscape:window-width="1914"
+     inkscape:window-height="2102"
      inkscape:window-x="0"
      inkscape:window-y="22"
      inkscape:window-maximized="1"
@@ -864,10 +864,10 @@
      inkscape:groupmode="layer"
      id="g1819"
      inkscape:label="Skala-temp"
-     style="display:inline;stroke:#ffff00">
+     style="display:inline;stroke:#ff0000">
     <path
        id="path1809"
-       style="display:inline;fill:none;stroke:#ffff00;stroke-width:0.427839;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;fill:none;stroke:#ff0000;stroke-width:0.427839;stroke-linecap:butt;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1"
        d="m 3.9862463,5.0023289 c 1.322148,0.00192 7.0941117,0.00376 10.0106767,-4e-7 m 0.0028,8.9975025 V 3.9999245 Z M 9,10.000076 V 3.9999245 Z M 4.999727,9.0001365 v -5.000212 z m 0.999939,0 v -5.000212 z m 0.999939,0 v -5.000212 z m 0.999939,0 v -5.000212 z m 2.000395,0 v -5.000212 z m 0.999939,0 v -5.000212 z m 0.999939,0 v -5.000212 z m 0.999939,0 V 3.9999245 Z M 3.9862463,13.988538 V 3.9886314 Z m 0.00822,-7.4885066 c 1.3221473,0.0019 7.0941107,0.0037 10.0106767,-1e-6"
        inkscape:label="Skala-lines"
        transform="matrix(3.5932122,0,0,0.56704847,94.676571,7.0614173)"
@@ -875,18 +875,18 @@
        sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccc" />
     <circle
        id="circle1811"
-       style="fill:#000000;stroke:#ffff00;stroke-width:0.264583"
+       style="fill:#000000;stroke:#ff0000;stroke-width:0.264583"
        cx="111.6614"
        cy="77.720779"
        r="0.0036112834" />
     <circle
        id="circle1813"
-       style="fill:#000000;stroke:#ffff00;stroke-width:0.264583"
+       style="fill:#000000;stroke:#ff0000;stroke-width:0.264583"
        cx="11.487158"
        cy="5.7526956"
        r="0.0036112834" />
     <path
-       style="fill:#000000;stroke:#ffff00;stroke-width:0.264"
+       style="fill:#000000;stroke:#ff0000;stroke-width:0.264"
        id="path1815"
        sodipodi:type="arc"
        sodipodi:cx="50"
@@ -918,9 +918,9 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan25118"><tspan
+         id="tspan1363"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25116">20</tspan></tspan></text>
+           id="tspan1361">20</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,37.342687,-7.0739114)"
@@ -932,9 +932,9 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan25122"><tspan
+         id="tspan1367"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25120">10</tspan></tspan></text>
+           id="tspan1365">10</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,16.999994,9.0060147)"
@@ -944,7 +944,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan25124">30</tspan></text>
+         id="tspan1369">30</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-9.0000055,0.00601467)"
@@ -954,7 +954,7 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan25126">50</tspan></text>
+         id="tspan1371">50</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,43.306388,-21.073911)"
@@ -964,7 +964,7 @@
        y="0"><tspan
          x="136.20021"
          y="275.88278"
-         id="tspan25128">0</tspan></text>
+         id="tspan1373">0</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,1.9999945,8.0060147)"
@@ -976,9 +976,9 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan25132"><tspan
+         id="tspan1377"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25130">40</tspan></tspan></text>
+           id="tspan1375">40</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-15.000006,-11.993985)"
@@ -990,9 +990,9 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan25136"><tspan
+         id="tspan1381"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25134">60</tspan></tspan></text>
+           id="tspan1379">60</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-17.000006,-25.993985)"
@@ -1004,9 +1004,9 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan25140"><tspan
+         id="tspan1385"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25138">70</tspan></tspan></text>
+           id="tspan1383">70</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-12.000006,-37.993985)"
@@ -1018,9 +1018,9 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan25144"><tspan
+         id="tspan1389"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25142">80</tspan></tspan></text>
+           id="tspan1387">80</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-1.6573131,-47.216048)"
@@ -1032,91 +1032,91 @@
        y="0"><tspan
          x="128.77834"
          y="275.88278"
-         id="tspan25148"><tspan
+         id="tspan1393"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25146">90</tspan></tspan></text>
+           id="tspan1391">90</tspan></tspan></text>
     <text
        xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,5.9998446,-51.993985)"
+       transform="matrix(0.26458333,0,0,0.26458333,8.9165111,-51.827319)"
        id="text8926-5-0"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:21.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans Bold';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect8928-3-36);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
        inkscape:transform-center-x="-0.090175569"
        inkscape:transform-center-y="-0.0090300384"
        x="13.489562"
        y="0"><tspan
-         x="133.34673"
+         x="129.6332"
          y="275.88278"
-         id="tspan25152"><tspan
+         id="tspan1397"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25150">100%</tspan></tspan></text>
+           id="tspan1395">100 %</tspan></tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
      id="g3088"
      inkscape:label="Numbers-temp"
-     style="display:inline;fill:#ffff00;stroke:none">
+     style="display:inline;fill:#ff0000;stroke:none">
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,0.99999445,-9.1212315)"
        id="text3032"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect3090);display:inline;fill:#ffff00;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect3090);display:inline;fill:#ff0000;fill-opacity:1;stroke:none"
        inkscape:transform-center-x="-0.090175569"
        inkscape:transform-center-y="-0.0090300384"
        x="13.489562"
        y="0"><tspan
          x="130.89749"
          y="268.80466"
-         id="tspan25156"><tspan
+         id="tspan1401"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25154">200</tspan></tspan></text>
+           id="tspan1399">200</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,18.627412,-5.1212395)"
        id="text3038"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect3092);display:inline;fill:#ffff00;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect3092);display:inline;fill:#ff0000;fill-opacity:1;stroke:none"
        inkscape:transform-center-x="-0.090175569"
        inkscape:transform-center-y="-0.0090300384"
        x="13.489562"
        y="0"><tspan
          x="130.89749"
          y="268.80466"
-         id="tspan25160"><tspan
+         id="tspan1405"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25158">100</tspan></tspan></text>
+           id="tspan1403">100</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-2.0000056,-25.121231)"
        id="text3042"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;white-space:pre;shape-inside:url(#rect3094);display:inline;fill:#ffff00;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;white-space:pre;shape-inside:url(#rect3094);display:inline;fill:#ff0000;fill-opacity:1;stroke:none"
        x="5.3541584"
        y="0"><tspan
          x="130.89749"
          y="268.80466"
-         id="tspan25162">300</tspan></text>
+         id="tspan1407">300</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,28.999994,-20.121239)"
        id="text3050"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;white-space:pre;shape-inside:url(#rect3098);display:inline;fill:#ffff00;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';text-align:center;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;white-space:pre;shape-inside:url(#rect3098);display:inline;fill:#ff0000;fill-opacity:1;stroke:none"
        x="5.3541584"
        y="0"><tspan
          x="139.38054"
          y="268.80466"
-         id="tspan25164">0</tspan></text>
+         id="tspan1409">0</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,10.689375,-36.171185)"
        id="text3056"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect3100);display:inline;fill:#ffff00;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;line-height:1.25;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect3100);display:inline;fill:#ff0000;fill-opacity:1;stroke:none"
        inkscape:transform-center-x="-0.090175569"
        inkscape:transform-center-y="-0.0090300384"
        x="13.489562"
        y="0"><tspan
          x="126.47857"
          y="268.80466"
-         id="tspan25168"><tspan
+         id="tspan1413"><tspan
            style="text-align:center;text-anchor:middle"
-           id="tspan25166">400 C°</tspan></tspan></text>
+           id="tspan1411">400 C°</tspan></tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
@@ -1131,7 +1131,7 @@
          startOffset="50%"
          id="textPath39306"><tspan
            id="tspan17773"
-           style="font-size:4.23333px;text-align:center;text-anchor:middle">PRINT PROGRESS</tspan></textPath></text>
+           style="font-size:4.23333px;text-align:center;text-anchor:middle">PROGRESS</tspan></textPath></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458963,0,0,0.26458333,-0.00123837,-0.7666795)"
@@ -1148,9 +1148,9 @@
        y="0"><tspan
          x="170.07812"
          y="240.92773"
-         id="tspan25172"><tspan
+         id="tspan1417"><tspan
            dx="0 9.46875 10.179688 10.179688"
-           id="tspan25170">x100</tspan></tspan></text>
+           id="tspan1415">x100</tspan></tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333px;line-height:1.25;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono';text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;display:none;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
@@ -1197,7 +1197,7 @@
          y="0"><tspan
            x="150.29688"
            y="241.18356"
-           id="tspan25174">GALOPED</tspan></text>
+           id="tspan1419">GALOPED</tspan></text>
       <text
          xml:space="preserve"
          transform="matrix(0.26458963,0,0,0.26458333,-9.9972263e-4,-22.857255)"
@@ -1207,9 +1207,9 @@
          y="0"><tspan
            x="152.8989"
            y="233.84952"
-           id="tspan25178"><tspan
+           id="tspan1423"><tspan
              style="text-anchor:middle"
-             id="tspan25176">KARLSRUHE</tspan></tspan></text>
+             id="tspan1421">KARLSRUHE</tspan></tspan></text>
     </g>
     <text
        xml:space="preserve"
@@ -1217,19 +1217,19 @@
        style="font-style:normal;font-weight:normal;font-size:10.6667px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;shape-inside:url(#rect37541-6);display:inline;fill:#ffffff;fill-opacity:1;stroke:none"
        y="0"
        x="29.429688"
-       transform="matrix(0.26458333,0,0,0.26458333,-2.231098,2.8724277)"><tspan
+       transform="matrix(0.22246578,0.1432247,-0.1432247,0.22246578,71.432573,-80.593629)"><tspan
          x="168.82025"
          y="311.96941"
-         id="tspan25180">petro.ws</tspan></text>
+         id="tspan1425">petro.ws</tspan></text>
     <path
        id="path28859"
        style="fill:none;stroke:none;stroke-width:0.242137;stroke-linejoin:bevel"
-       d="M 19.242471,70 A 36.67896,36.696065 14.352117 0 1 30.015064,19.234368 36.67896,36.696065 14.352117 0 1 80.757529,30 36.67896,36.696065 14.352117 0 1 69.984936,80.765632 36.67896,36.696065 14.352117 0 1 19.242471,70 Z"
+       d="M 16.205452,64.28125 A 36.67896,36.696065 24.477494 0 1 35.735004,16.200123 36.67896,36.696065 24.477494 0 1 83.794548,35.71875 36.67896,36.696065 24.477494 0 1 64.264996,83.799877 36.67896,36.696065 24.477494 0 1 16.205452,64.28125 Z"
        inkscape:label="path28859" />
     <path
        id="path3190"
        style="fill:none;stroke:none;stroke-width:0.242137;stroke-linejoin:bevel"
-       d="M 19.242471,70 A 36.67896,36.696065 14.352117 0 1 30.015064,19.234368 36.67896,36.696065 14.352117 0 1 80.757529,30 36.67896,36.696065 14.352117 0 1 69.984936,80.765632 36.67896,36.696065 14.352117 0 1 19.242471,70 Z"
+       d="M 29.089352,19.854181 A 36.696065,36.67896 12.63883 0 1 80.154369,29.104167 36.696065,36.67896 12.63883 0 1 70.910648,80.145819 36.696065,36.67896 12.63883 0 1 19.845631,70.895833 36.696065,36.67896 12.63883 0 1 29.089352,19.854181 Z"
        inkscape:label="path28859" />
     <path
        id="path3381"
@@ -1239,10 +1239,10 @@
     <text
        xml:space="preserve"
        id="text37539-2"
-       style="font-style:normal;font-weight:normal;font-size:4.23333333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;display:inline;fill:#ffff00;fill-opacity:1;stroke:none"><textPath
+       style="font-style:normal;font-weight:normal;font-size:4.23333333px;line-height:1.25;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;white-space:pre;display:inline;fill:#ff0000;fill-opacity:1;stroke:none"><textPath
          xlink:href="#path3381"
          startOffset="50%"
          id="textPath7939"
-         style="display:inline;font-size:4.23333333px;fill:#ffff00">NOZZLE</textPath></text>
+         style="display:inline;font-size:4.23333333px;fill:#ff0000">NOZZLE</textPath></text>
   </g>
 </svg>
