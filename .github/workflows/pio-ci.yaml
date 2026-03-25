@@ -63,13 +63,13 @@ jobs:
             # See Dockerfile for static environment
             export CI=true
             # Build for each model
-            ./bin/build.sh ${{ matrix.model }}
+            ./bin/build.sh esp32 ${{ matrix.model }}
             echo "::endgroup::"
       - name: Archive firmware file
         uses: actions/upload-artifact@v4
         with:
           name: firmware-${{ matrix.model }}
-          path: firmware/galoped-dekad-firmware-${{ matrix.model }}.bin
+          path: firmware/galoped-*.bin
   build-autoexec:
     runs-on: self-hosted
     container:
