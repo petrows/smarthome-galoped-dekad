@@ -34,6 +34,12 @@
  *   - All parameters can be persistent changed online using commands via MQTT, WebConsole or Serial.
 \*****************************************************************************************************/
 
+#undef PROJECT
+#define PROJECT "galoped"
+
+#undef MQTT_TOPIC
+#define MQTT_TOPIC PROJECT "_%06X"
+
 // Required features for this project:
 // [I2cDriver43] Enable AHT20/AM2301B instead of AHT1x humidity and temperature sensor (I2C address 0x38) (+0k8 code)
 #ifndef USE_AHT2x
