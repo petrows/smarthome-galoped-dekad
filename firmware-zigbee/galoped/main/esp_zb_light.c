@@ -65,6 +65,7 @@ void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
             }
         } else {
             ESP_LOGW(TAG, "Failed to initialize Zigbee stack (status: %s)", esp_err_to_name(err_status));
+            // esp_restart();
         }
         break;
     case ESP_ZB_BDB_SIGNAL_STEERING:
@@ -179,6 +180,9 @@ static void button_task(void *pvParameters)
             s_light_power = !s_light_power;
             ESP_LOGI(TAG, "Button short press: light %s", s_light_power ? "On" : "Off");
             light_driver_set_power(s_light_power);
+            if (s_light_power) {
+                light_driver_set_level(0xF0);
+            }
             /* Update ZCL on/off attribute so coordinator sees the new state */
             if (esp_zb_lock_acquire(portMAX_DELAY)) {
                 esp_zb_zcl_set_attribute_val(HA_ESP_LIGHT_ENDPOINT,
