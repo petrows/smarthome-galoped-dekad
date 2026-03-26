@@ -7,6 +7,7 @@ on:
       - 'firmware/**'
     branches:
       - master
+      - Version-2
   pull_request:
     paths:
       - '.github/workflows/pio-ci.yaml'
@@ -45,7 +46,17 @@ jobs:
       options: -u 2025:2025
     strategy:
       matrix:
-        model: ['rgb', 'retro']
+        include:
+          # Legacy versions: v1 and v2
+          - chip: esp32
+            model: rgb
+          - chip: esp32
+            model: retro
+          - chip: esp32
+            model: biax
+          # Galoped-s
+          - chip: esp32c6
+            model: biax
     steps:
       - uses: actions/checkout@v4
         with:
@@ -56,20 +67,20 @@ jobs:
           path: |
             ~/.cache/pip
             ~/.platformio/.cache
-          key: ${{ runner.os }}-pio
+          key: ${{ runner.os }}-pio-${{ matrix.chip }}
       - name: Build firmware
         run: |
             echo "::group::pio ci"
             # See Dockerfile for static environment
             export CI=true
             # Build for each model
-            ./bin/build.sh esp32 ${{ matrix.model }}
+            ./bin/build.sh ${{ matrix.chip }} ${{ matrix.model }}
             echo "::endgroup::"
       - name: Archive firmware file
         uses: actions/upload-artifact@v4
         with:
-          name: firmware-${{ matrix.model }}
-          path: firmware/galoped-*.bin
+          name: firmware-wifi-${{ matrix.chip }}-${{ matrix.model }}
+          path: firmware-wifi/galoped-*.bin
   build-autoexec:
     runs-on: self-hosted
     container:

@@ -21,7 +21,7 @@ def main():
     args = parser.parse_args()
 
     # Setup Jinja2 environment
-    template_dir = Path(__file__).parent.parent / 'firmware' / 'autoexec_templates'
+    template_dir = Path(__file__).parent.parent / 'firmware-wifi' / 'autoexec_templates'
     env = Environment(loader=FileSystemLoader(template_dir))
 
     # Template variables
