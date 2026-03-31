@@ -29,6 +29,10 @@ External components:
 
 * Metal enclosure and glass is taken from [Ikea Dekad](https://www.ikea.com/de/de/p/dekad-wecker-schwarz-30540479/)
 
+Backlight versions:
+
+* RGB: 252 mm (40 LED's) of 2.7 mm addressed led strip
+
 ## PCB and Schematics
 
 Made in EasyEDA Web project:
