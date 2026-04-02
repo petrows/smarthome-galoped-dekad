@@ -12,7 +12,7 @@ on:
     paths:
       - '.github/workflows/pio-ci.yaml'
       - 'bin/build.sh'
-      - 'firmware/**'
+      - 'firmware-*/**'
     branches:
       - master
       - Version-2
