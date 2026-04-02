@@ -14,6 +14,7 @@ on:
       - 'firmware/**'
     branches:
       - master
+      - Version-2
 jobs:
   user-manual:
     runs-on: self-hosted
