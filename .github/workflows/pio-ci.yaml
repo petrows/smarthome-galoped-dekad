@@ -22,7 +22,7 @@ jobs:
       image: ghcr.io/petrows/latex:v1
       options: -u 2025:2025
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build manual
         run: |
             echo "::group::latex build"
@@ -34,7 +34,7 @@ jobs:
             xelatex manual.tex
             echo "::endgroup::"
       - name: Archive manual file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: user-manual
           path: manual/manual.pdf
@@ -58,7 +58,7 @@ jobs:
           - chip: esp32c6
             model: biax
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -82,7 +82,7 @@ jobs:
             ./bin/build.sh ${{ matrix.chip }} ${{ matrix.model }}
             echo "::endgroup::"
       - name: Archive firmware file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: firmware-wifi-${{ matrix.chip }}-${{ matrix.model }}
           path: firmware-wifi/galoped-*.bin
@@ -95,13 +95,13 @@ jobs:
       matrix:
         model: ['linear', 'logf']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build autoexec.be
         run: |
             # Build autoexec for each variant (Linear and Logf)
             ./bin/mk-autoexec.py -t autoexec.be --scale ${{ matrix.model }} -o autoexec.be
       - name: Archive firmware file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: autoexec-${{ matrix.model }}
           path: autoexec.be
