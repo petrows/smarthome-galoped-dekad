@@ -62,6 +62,7 @@
 // Add support for VID6608 Automotive analog gauge driver (+0k7 code)
 #define USE_VID6608
 // Reset VID6608 on init (default: true), change if you control this manually
+// Starting from 2026-04-03: reset is controlled from FW Galoped driver
 #define VID6608_RESET_ON_INIT false
 
 // Enable WS2812 leds number (any HW model)

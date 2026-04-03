@@ -76,8 +76,8 @@ jobs:
             echo "::group::pio ci"
             # See Dockerfile for static environment
             export CI=true
-            # Define FW version
-            export PLATFORMIO_BUILD_FLAGS="-DGALOPED_VERSION=${{ steps.vars.outputs.sha_short }}"
+            # Define FW version (replace in cpp file vs define to keep cache warm)
+            sed -i 's/##VERSION##/${{ steps.vars.outputs.sha_short }}/' firmware-wifi/tasmota/tasmota/tasmota_xdrv_driver/xdrv_110_0_galoped_version.ino
             # Build for each model
             ./bin/build.sh ${{ matrix.chip }} ${{ matrix.model }}
             echo "::endgroup::"
