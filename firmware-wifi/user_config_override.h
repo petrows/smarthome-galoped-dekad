@@ -43,6 +43,9 @@
 // Enabke custom Galoped UI (not part of original Tasmota)
 #define USE_GALOPED
 
+// Advanced animation modules for RGB
+#define USE_BERRY_ANIMATION
+
 // Required features for this project:
 // [I2cDriver43] Enable AHT20/AM2301B instead of AHT1x humidity and temperature sensor (I2C address 0x38) (+0k8 code)
 #ifndef USE_AHT2x
