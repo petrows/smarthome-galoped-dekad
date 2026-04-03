@@ -14,6 +14,10 @@ This device is a universal desktop indicator with nice exterrior and full open s
 * Easy customisation to display anything else, from internal or external data source;
 * Designed to run Tasmota directly: WebUI, MQTT, Smart-home integration and etc;
 
+## Buy device
+
+I have some devices available on Etsy: https://www.etsy.com/de-en/shop/PetroWSDE
+
 ## Device components
 
 This repo contains full sources for this device:
