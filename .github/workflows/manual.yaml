@@ -19,7 +19,7 @@ jobs:
       image: ghcr.io/petrows/latex:v1
       options: -u 2025:2025
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build manual
         run: |
             echo "::group::latex build"
@@ -31,7 +31,7 @@ jobs:
             xelatex manual.tex
             echo "::endgroup::"
       - name: Archive manual file
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: galoped-dekad-manual.pdf
           path: manual/manual.pdf
