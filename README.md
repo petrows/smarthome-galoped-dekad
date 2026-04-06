@@ -36,7 +36,7 @@ See device notes: [Galoped (3D Printer temperature + progress)](doc/device-3dp-t
 * Device version 1: [Version-1 history branch](https://github.com/petrows/smarthome-galoped-dekad/tree/Version-1)
 * Device version 2: this readme
 
-Changes in Version 2:
+### Changes in Version 2:
 
 * Complete new case parts with optimized design:
     * Backlight and main part are assembled before case installation (significally reduces assembly effort)
@@ -79,6 +79,8 @@ Made in EasyEDA Web project:
 Firmware is based on [Tasmota](https://tasmota.github.io) with many features included.
 
 Download actual version at [Releases](https://github.com/petrows/smarthome-galoped-dekad/releases) page.
+
+Device configuration: [Galoped firmware configuration](doc/fw-config.md).
 
 Scripts are in [firmware configuration files](firmware).
 
