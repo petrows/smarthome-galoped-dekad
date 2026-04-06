@@ -1,16 +1,18 @@
 #!/bin/bash -xe
 
 CHIP=$1
-VARIANT=$2
+BUILD_ENV=$2
+VARIANT=$3
 
-if [[ -z "$CHIP" ]] || [[ -z "$VARIANT" ]]; then
-    echo "Usage: $0 <chipset> <variant>"
-    echo "Available chipset: esp32, esp32c6"
-    echo "Available variants: rgb, retro, biax"
+if [[ -z "$CHIP" ]] || [[ -z "$BUILD_ENV" ]] || [[ -z "$VARIANT" ]]; then
+    echo "Usage: $0 <chipset> <env> <variant>"
+    echo "Chipset: esp32, esp32c6 (fw name only)"
+    echo "Env: tasmota32, tasmota32c6 (build arg)"
+    echo "Variant: fw variant (fw name only)"
     exit 1
 fi
 
-echo "Building firmware for cipset: $CHIP, variant: $VARIANT"
+echo "Building firmware for cipset: $CHIP, env: $BUILD_ENV, variant: $VARIANT"
 
 FW_NAME=galoped-wifi-firmware-${CHIP}-${VARIANT}
 
@@ -26,12 +28,8 @@ cd firmware-wifi/tasmota
 # Copy config overrides
 cp ../user_config_override.h tasmota/
 
-# Copy HW version config
-mkdir -p tasmota/user/
-cp ../user_config_${CHIP}-${VARIANT}.h tasmota/user/user_config_hw.h
-
 # Build firmware
-platformio run -e tasmota32
+platformio run -e $BUILD_ENV
 
 cp .pio/build/tasmota32/firmware.bin ../${FW_NAME}.bin
 cd ..

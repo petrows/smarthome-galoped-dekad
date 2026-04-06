@@ -50,14 +50,18 @@ jobs:
         include:
           # Legacy versions: v1 and v2
           - chip: esp32
-            model: rgb
+            model: biax-rgb
+            pioenv: tasmota32
+            defines: '-DGALOPED_AXIS=2 -DGALOPED_BACKLIGHT=0'
           - chip: esp32
-            model: retro
-          - chip: esp32
-            model: biax
-          # Galoped-s
+            model: moax-rgb
+            pioenv: tasmota32
+            defines: '-DGALOPED_AXIS=1 -DGALOPED_BACKLIGHT=0'
           - chip: esp32c6
-            model: biax
+            model: moax-retro
+            pioenv: tasmota32c6
+            defines: '-DGALOPED_AXIS=1 -DGALOPED_BACKLIGHT=1'
+    name: Firmware ${{ matrix.chip }} - ${{ matrix.model }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -79,8 +83,10 @@ jobs:
             export CI=true
             # Define FW version (replace in cpp file vs define to keep cache warm)
             sed -i 's/##VERSION##/${{ steps.vars.outputs.sha_short }}/' firmware-wifi/tasmota/tasmota/tasmota_xdrv_driver/xdrv_110_0_galoped_version.ino
+            # Define platform options
+            export PLATFORMIO_BUILD_FLAGS="${{ matrix.defines }}"
             # Build for each model
-            ./bin/build.sh ${{ matrix.chip }} ${{ matrix.model }}
+            ./bin/build.sh ${{ matrix.chip }} ${{ matrix.pioenv }} ${{ matrix.model }}
             echo "::endgroup::"
       - name: Archive firmware file
         uses: actions/upload-artifact@v7
