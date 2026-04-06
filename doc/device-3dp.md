@@ -9,6 +9,31 @@ Device has customizations on top of base Galoped model:
 * Device does not have any customization
 * Sensors are not installed
 
+## Configuration
+
+Configuration for devices:
+
+### Printer Temperature + Progress (Bi-Axial)
+
+```ini
+; galoped.ini
+; Printer Temperature + Progress (Bi-Axial)
+[galoped]
+model = 3dp_tp
+[gauge-1]
+name = Temp
+unit = C°
+deg = 270
+min = 0
+max = 300
+[gauge-2]
+name = Progress
+unit = %
+deg = 270
+min = 0
+max = 100
+```
+
 ## BambuLab printer status display
 
 Firmware has module to read MQTT status report from BambuLab printers. To connect
