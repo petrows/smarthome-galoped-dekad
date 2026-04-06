@@ -97,22 +97,3 @@ jobs:
         with:
           name: firmware-wifi-${{ matrix.chip }}-${{ matrix.model }}
           path: firmware-wifi/galoped-*.bin
-  build-autoexec:
-    runs-on: self-hosted
-    container:
-      image: ghcr.io/petrows/platformio:v4
-      options: -u 2025:2025
-    strategy:
-      matrix:
-        model: ['linear', 'logf']
-    steps:
-      - uses: actions/checkout@v6
-      - name: Build autoexec.be
-        run: |
-            # Build autoexec for each variant (Linear and Logf)
-            ./bin/mk-autoexec.py -t autoexec.be --scale ${{ matrix.model }} -o autoexec.be
-      - name: Archive firmware file
-        uses: actions/upload-artifact@v7
-        with:
-          name: autoexec-${{ matrix.model }}
-          path: autoexec.be
