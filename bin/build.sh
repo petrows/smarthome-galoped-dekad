@@ -31,7 +31,7 @@ cp ../user_config_override.h tasmota/
 # Build firmware
 platformio run -e $BUILD_ENV
 
-cp .pio/build/tasmota32/firmware.bin ../${FW_NAME}.bin
+cp .pio/build/$BUILD_ENV/firmware.bin ../${FW_NAME}.bin
 cd ..
 tar -czf ${FW_NAME}.tar.gz ${FW_NAME}.bin
 
