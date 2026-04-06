@@ -60,7 +60,7 @@ jobs:
           - chip: esp32c6
             model: moax-retro
             pioenv: tasmota32c6
-            defines: '-DGALOPED_AXIS=1 -DGALOPED_BACKLIGHT=1'
+            defines: '-DGALOPED_AXIS=1 -DGALOPED_BACKLIGHT=0'
     name: Firmware ${{ matrix.chip }} - ${{ matrix.model }}
     steps:
       - uses: actions/checkout@v6
