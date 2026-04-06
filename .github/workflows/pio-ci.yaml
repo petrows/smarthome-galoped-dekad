@@ -6,16 +6,14 @@ on:
       - 'bin/build.sh'
       - 'firmware-*/**'
     branches:
-      - master
-      - Version-2
+      - '*'
   pull_request:
     paths:
       - '.github/workflows/pio-ci.yaml'
       - 'bin/build.sh'
       - 'firmware-*/**'
     branches:
-      - master
-      - Version-2
+      - '*'
 jobs:
   user-manual:
     runs-on: self-hosted
