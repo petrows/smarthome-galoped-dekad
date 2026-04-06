@@ -23,13 +23,8 @@ I have some devices available on Etsy: https://www.etsy.com/de-en/shop/PetroWSDE
 
 Device has several veriants built:
 
-### CO2 Meter
-
-See device notes: [Galoped (CO2)](doc/device-co2.md).
-
-### 3D Printer temperature + progress
-
-See device notes: [Galoped (3D Printer temperature + progress)](doc/device-3dp-tp.md).
+* [CO2 and Cliamte instrument](doc/device-co2.md)
+* [3D Printer temperature + progress](doc/device-3dp.md)
 
 ## Changelog
 
@@ -46,6 +41,11 @@ See device notes: [Galoped (3D Printer temperature + progress)](doc/device-3dp-t
 * New USB-C power socket with USB-C-C cables support
 * Complete rework of RGB backlight, removed LED artifacts and glare
 * Complete firmware rework (autoexec.bat is not required anymore, fully integrated logic and UI)
+
+## Project information
+
+* [How to configure device](doc/fw-config.md)
+* [How to command device](doc/fw-command.md)
 
 ## Device components
 
@@ -84,44 +84,6 @@ Device configuration: [Galoped firmware configuration](doc/fw-config.md).
 
 Scripts are in [firmware configuration files](firmware).
 
-## Tasmota configuration
-
-Device PCB has following connections to ESP32 MCU:
-
-| GPIO | Configuration |
-| ---- | ------------- |
-| 0 | Button (also connected to on-board reset curcut) |
-| 1 | Exposed UART TX |
-| 3 | Exposed UART RX |
-| 4 | Exposed to user |
-| 13 | Exposed to user |
-| 14 | PWM for retro backlight |
-| 15 | WS2812b control for RGB backlight |
-| 16 | S8 RX |
-| 17 | S8 TX |
-| 18 | Exposed to user |
-| 19 | S8 calibration pin |
-| 21 | I²C SDA |
-| 22 | I²C SCL |
-| 23 | Exposed to user |
-| 25 | Exposed to user |
-| 26 | Motor A step |
-| 27 | Motor A direction |
-| 32 | Motor B step |
-| 33 | Motor B direction |
-| 34 | Button 0 |
-
-Template for RGB backlight version:
-```json
-{"NAME":"Galoped-dekad-rgb","GPIO":[1,1,1,1,1,1,1,1,1,1,0,1376,1600,1632,1,1,0,640,608,1,0,1,12160,12192,0,0,0,0,1,1,32,1,1,0,0,1],"FLAG":0,"BASE":1}
-```
-
-Template for Retro backlight version:
-```json
-{"NAME":"Galoped-dekad-retro","GPIO":[1,1,1,1,1,1,1,1,1,1,416,0,1600,1632,1,1,0,640,608,1,0,1,12160,12192,0,0,0,0,1,1,32,1,1,0,0,1],"FLAG":0,"BASE":1}
-```
-
-See predefined templates in [firmware configuration files](firmware).
 
 ## Device strucutre
 
