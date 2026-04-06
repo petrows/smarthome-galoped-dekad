@@ -1,6 +1,6 @@
 # Galoped (3D Printer version)
 
-![Device](assets/device-co2-all.jpg)
+![Device](assets/device-3dp-all.jpg)
 
 ## Device specs
 
