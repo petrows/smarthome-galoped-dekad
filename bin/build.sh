@@ -18,12 +18,10 @@ FW_NAME=galoped-wifi-firmware-${CHIP}-${VARIANT}
 
 cd firmware-wifi/tasmota
 
-# Build safeboot binary (if CI)
-# if [ "$CI" = "true" ]; then
-#     rm -rf tasmota/user
-#     rm -rf tasmota/user_config_override.h
-#     platformio run -e tasmota32-safeboot
-# fi
+# Copy safeboot binary (if CI)
+if [[ "$CI" = "true" ]]; then
+   cp -rva ../safeboot/* variants/tasmota/
+fi
 
 # Copy config overrides
 cp ../user_config_override.h tasmota/
