@@ -79,7 +79,8 @@ jobs:
           path: |
             ~/.cache/pip
             ~/.platformio/.cache
-          key: ${{ runner.os }}-pio-${{ matrix.chip }}
+            firmware-wifi/tasmota/.cache
+          key: ${{ runner.os }}-pio-${{ matrix.pioenv }}-${{ matrix.model }}
       - name: Build firmware
         run: |
             echo "::group::pio ci"
