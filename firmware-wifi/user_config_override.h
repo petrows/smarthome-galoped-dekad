@@ -34,6 +34,12 @@
  *   - All parameters can be persistent changed online using commands via MQTT, WebConsole or Serial.
 \*****************************************************************************************************/
 
+// Customizations, if any
+#if __has_include("user/galoped.h")
+	#include "user/galoped.h"
+#endif
+
+// Main Galoped project defines
 #undef PROJECT
 #define PROJECT "galoped"
 
