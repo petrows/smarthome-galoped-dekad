@@ -54,6 +54,7 @@ jobs:
           path: |
             ~/.cache/pip
             ~/.platformio/.cache
+            ~/.platformio/dist
             firmware-wifi/tasmota/.cache
           key: ${{ runner.os }}-pio-${{ matrix.pioenv }}-${{ matrix.model }}
       - name: Build firmware
