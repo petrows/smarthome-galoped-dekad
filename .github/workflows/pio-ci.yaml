@@ -56,6 +56,7 @@ jobs:
             ~/.platformio/.cache
             ~/.platformio/dist
             firmware-wifi/tasmota/.cache
+            firmware-wifi/tasmota/variants
           key: pio-${{ matrix.pioenv }}-${{ matrix.model }}
       - name: Build firmware
         run: |
