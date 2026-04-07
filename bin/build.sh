@@ -20,7 +20,8 @@ cd firmware-wifi/tasmota
 
 # Copy safeboot binary (if CI)
 if [[ "$CI" = "true" ]]; then
-   cp -rva ../safeboot/* variants/tasmota/
+    mkdir -p variants/tasmota/
+    cp -rva ../safeboot/* variants/tasmota/
 fi
 
 # Copy config overrides
