@@ -2,7 +2,7 @@
 
 Vintage analog indicator with modern MCU and Tasmota.
 
-![Device](article/assets/device-promo-1.jpg)
+![Device](doc/assets/p1.jpg)
 
 This device is a universal desktop indicator with nice exterrior and full open source nature. Based on ESP32-WROOM32E SoC module, VID6608 automotive gauge driver and X27-168 automotive gauge stepper motor.
 
