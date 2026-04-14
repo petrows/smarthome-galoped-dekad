@@ -1,0 +1,66 @@
+name: PlatformIO CI
+on:
+  workflow_call:
+    secrets:
+      personal_access_token:
+        required: true
+jobs:
+  build-firmware:
+    runs-on: self-hosted
+    container:
+      image: ghcr.io/petrows/platformio:v4
+      options: -u 2025:2025
+    strategy:
+      matrix:
+        include:
+          # Legacy versions: v1 and v2
+          - chip: esp32
+            model: biax-rgb
+            pioenv: tasmota32
+            defines: '-DGALOPED_AXIS=2 -DGALOPED_BACKLIGHT=0'
+          - chip: esp32
+            model: moax-rgb
+            pioenv: tasmota32
+            defines: '-DGALOPED_AXIS=1 -DGALOPED_BACKLIGHT=0'
+          - chip: esp32
+            model: moax-retro
+            pioenv: tasmota32
+            defines: '-DGALOPED_AXIS=1 -DGALOPED_BACKLIGHT=1'
+          - chip: esp32c6
+            model: biax-rgb
+            pioenv: tasmota32c6
+            defines: '-DGALOPED_AXIS=2 -DGALOPED_BACKLIGHT=0'
+    name: Firmware ${{ matrix.chip }} - ${{ matrix.model }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set outputs
+        id: vars
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.platformio/.cache
+            ~/.platformio/dist
+            firmware-wifi/tasmota/.cache
+          key: pio-${{ matrix.pioenv }}-${{ matrix.model }}
+      - name: Build firmware
+        run: |
+            echo "::group::pio ci"
+            # See Dockerfile for static environment
+            export CI=true
+            # Define FW version (replace in cpp file vs define to keep cache warm)
+            sed -i 's/##VERSION##/${{ steps.vars.outputs.sha_short }}/' firmware-wifi/tasmota/tasmota/tasmota_xdrv_driver/xdrv_110_0_galoped_version.ino
+            # Define platform options
+            export PLATFORMIO_BUILD_FLAGS="${{ matrix.defines }}"
+            # Build for each model
+            ./bin/build.sh ${{ matrix.chip }} ${{ matrix.pioenv }} ${{ matrix.model }}
+            echo "::endgroup::"
+      - name: Archive firmware file
+        uses: actions/upload-artifact@v7
+        with:
+          name: firmware-wifi-${{ matrix.chip }}-${{ matrix.model }}
+          path: firmware-wifi/galoped-*.bin
