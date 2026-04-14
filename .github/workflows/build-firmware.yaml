@@ -1,9 +1,6 @@
-name: PlatformIO CI
+name: Build WiFi Firmware
 on:
   workflow_call:
-    secrets:
-      personal_access_token:
-        required: true
 jobs:
   build-firmware:
     runs-on: self-hosted

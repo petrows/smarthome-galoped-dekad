@@ -18,4 +18,5 @@ on:
 jobs:
   build-firmware:
     uses: ./.github/workflows/build-firmware.yaml
+    secrets: inherit # pass all secrets
 
