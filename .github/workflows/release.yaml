@@ -33,12 +33,20 @@ jobs:
         uses: actions/download-artifact@v7
         with:
           pattern: firmware-wifi-*
+          # If true, the downloaded artifacts will be in the same directory specified by path.
+          merge-multiple: true
           path: rss/files
+      - name: Release test
+        # Dump commit message as RN title
+        run: |
+          cd rss
+          ls -lah
+          cd files
+          ls -lah
       - name: Release
         uses: softprops/action-gh-release@v3
         # if: github.ref_type == 'tag'
         with:
           draft: true
-          body_path: rn.txt
-          working_directory: ${{ github.workspace }}/rss
-          files: files/*
+          body_path: rss/rn.txt
+          files: rss/files/*
