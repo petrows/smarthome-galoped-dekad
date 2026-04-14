@@ -4,12 +4,18 @@ on:
   push:
     branches:
       - 'Release-*'
+    tags:
+      - "v*.*.*"
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  build-firmware:
+    uses: ./.github/workflows/build-firmware.yaml
+    secrets: inherit # pass all secrets
+  build-release:
+    needs: build-firmware
     runs-on: self-hosted
     container:
       image: ghcr.io/petrows/platformio:v4
@@ -17,15 +23,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Build
-        run: echo ${{ github.sha }} > Release.txt
-      - name: Test
-        run: cat Release.txt
+      - name: Release commit message
+        # Dump commit message as RN title
+        run: |
+          mkdir -p rss/files
+          echo ${{ github.sha }} > rss/files/version.txt
+          git show -s --format=%B > rss/rn.txt
+      - name: Fetch built artifacts
+        uses: actions/download-artifact@v7
+        with:
+          pattern: firmware-wifi-*
+          path: rss/files
       - name: Release
         uses: softprops/action-gh-release@v3
         # if: github.ref_type == 'tag'
         with:
           draft: true
-          files: |
-            Release.txt
-            LICENSE
+          body_path: rn.txt
+          working_directory: ${{ github.workspace }}/rss
+          files: files/*
