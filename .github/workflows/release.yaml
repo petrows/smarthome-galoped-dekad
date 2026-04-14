@@ -1,0 +1,31 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - 'Release-*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: self-hosted
+    container:
+      image: ghcr.io/petrows/platformio:v4
+      options: -u 2025:2025
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Build
+        run: echo ${{ github.sha }} > Release.txt
+      - name: Test
+        run: cat Release.txt
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        # if: github.ref_type == 'tag'
+        with:
+          draft: true
+          files: |
+            Release.txt
+            LICENSE
