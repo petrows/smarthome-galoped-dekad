@@ -2,8 +2,6 @@ name: Release
 
 on:
   push:
-    branches:
-      - 'Release-*'
     tags:
       - "v*.*.*"
 
@@ -23,12 +21,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          submodules: true
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Release commit message
         # Dump commit message as RN title
         run: |
           mkdir -p rss/files
           echo ${{ github.sha }} > rss/files/version.txt
-          git show -s --format=%B > rss/rn.txt
+          git show -s --format=%B > rss/rn.md
+          echo "## Component version" >> rss/rn.md
+          echo "* Tasmota: **`./bin/get_tasmota_version.sh`**" >> rss/rn.md
+          echo "Release notes:"
+          cat rss/rn.md
       - name: Fetch built artifacts
         uses: actions/download-artifact@v7
         with:
@@ -36,17 +41,10 @@ jobs:
           # If true, the downloaded artifacts will be in the same directory specified by path.
           merge-multiple: true
           path: rss/files
-      - name: Release test
-        # Dump commit message as RN title
-        run: |
-          cd rss
-          ls -lah
-          cd files
-          ls -lah
       - name: Release
         uses: softprops/action-gh-release@v3
-        # if: github.ref_type == 'tag'
+        if: github.ref_type == 'tag'
         with:
           draft: true
-          body_path: rss/rn.txt
+          body_path: rss/rn.md
           files: rss/files/*
