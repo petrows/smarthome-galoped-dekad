@@ -29,7 +29,7 @@ Device has several veriants built:
 ## Changelog
 
 * Device version 1: [Version-1 history branch](https://github.com/petrows/smarthome-galoped-dekad/tree/Version-1)
-* Device version 2: this readme
+* Device version 2: This readme
 
 ### Changes in Version 2:
 
@@ -70,6 +70,10 @@ I dont assembly Retro backlight version by default anymore. RGB Backlight looks 
 
 ## PCB and Schematics
 
+![PCB top](schematic/pcb-top.jpg)
+
+![PCB bottom](schematic/pcb-bottom.jpg)
+
 Made in EasyEDA Web project:
 
 * [MCU board](https://oshwlab.com/petrows/galoped-dekad)
@@ -96,15 +100,3 @@ Physical parts are designed in FreeCAD and provided as-is with STL files to prin
 ## Assembly
 
 See: [Assembly instructions](doc/assembly.md).
-
-## Gallery
-
-![Device](article/assets/device-promo-2.jpg)
-
-![Device](article/assets/device-promo-3.jpg)
-
-![Device](article/assets/light-rgb-sector.jpg)
-
-![Device](article/assets/device-promo-5.jpg)
-
-![Device](article/assets/device-promo-6.jpg)
