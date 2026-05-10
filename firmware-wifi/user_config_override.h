@@ -68,14 +68,7 @@
 #ifndef USE_SENSEAIR
     #define USE_SENSEAIR
 #endif
-// Add support for VID6608 Automotive analog gauge driver (+0k7 code)
-#define USE_VID6608
-// Reset VID6608 on init (default: true), change if you control this manually
-// Starting from 2026-04-03: reset is controlled from FW Galoped driver
-#define VID6608_RESET_ON_INIT false
-// Default steps - same for singe- and bi-axial versions, 320° + 270°
-#define VID6608_STEPS_1 12 * 320
-#define VID6608_STEPS_2 12 * 275
+
 
 // Enable WS2812 leds number (any HW model)
 #undef WS2812_LEDS
@@ -101,6 +94,28 @@
 #ifndef GALOPED_AXIS
 #   define GALOPED_AXIS 1  // Default is single-axis
 #endif
+
+// Add support for VID6608 Automotive analog gauge driver (+0k7 code)
+#define USE_VID6608
+// Reset VID6608 on init (default: true), change if you control this manually
+// Starting from 2026-04-03: reset is controlled from FW Galoped driver
+#define VID6608_RESET_ON_INIT false
+
+// The bi-axial version with BKA30D-R5 require some precise steps-tuning,
+// as it has jitter at the end-stops, this can cause resolution drop
+#if GALOPED_AXIS == 2
+#define VID6608_STEPS_1 3950 // 329.2°
+#define VID6608_STEPS_2 3295 // 274.5°
+// The BKA30D-R5 drive has to be pulled up a bit
+#define VID6608_ZERO_PULLUP_STEPS 5
+#else
+// Default steps - same for singe- and bi-axial versions, 320° + 270°
+#define VID6608_STEPS_1 12 * 320
+#define VID6608_STEPS_2 12 * 275
+// Default is not to use additional pull-up mode
+#define VID6608_ZERO_PULLUP_STEPS 0
+#endif
+
 // Backlight
 #define GALOPED_BACKLIGHT_RGB 0
 #define GALOPED_BACKLIGHT_RETRO 1
