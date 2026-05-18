@@ -85,6 +85,8 @@
 #define GALOPED_PLATFORM_ESP32
 #elif CONFIG_IDF_TARGET_ESP32C6
 #define GALOPED_PLATFORM_ESP32C6
+// Disable RMT for TasmotaLED on c6 platform (only 2 RMT channels)
+#define TASMOTALED_HARDWARE_RMT 0
 #else
 #error "Unsupported platform"
 #endif
@@ -97,9 +99,13 @@
 
 // Add support for VID6608 Automotive analog gauge driver (+0k7 code)
 #define USE_VID6608
+
+// Use HW RMT driver
+#define VID6608_RMT 1
+
 // Reset VID6608 on init (default: true), change if you control this manually
 // Starting from 2026-04-03: reset is controlled from FW Galoped driver
-#define VID6608_RESET_ON_INIT false
+#define VID6608_RESET_ON_INIT 0
 
 // The bi-axial version with BKA30D-R5 require some precise steps-tuning,
 // as it has jitter at the end-stops, this can cause resolution drop
