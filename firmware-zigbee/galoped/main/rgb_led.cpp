@@ -3,7 +3,9 @@
 #include "esp_log.h"
 #include "led_strip_spi.h"
 
-static const char *TAG = "RgbLed";
+#include <cmath>
+
+static const char *TAG = "LED";
 
 RgbLed::RgbLed(gpio_num_t data_gpio, spi_host_device_t spi_host, uint32_t led_count)
     : pin_(data_gpio),
@@ -13,7 +15,10 @@ RgbLed::RgbLed(gpio_num_t data_gpio, spi_host_device_t spi_host, uint32_t led_co
       on_(false),
       brightness_(255),
       hue_(0),
-      saturation_(0)
+      saturation_(0),
+      color_x_(0x616b),  // ESP_ZB_ZCL_COLOR_CONTROL_CURRENT_X_DEF_VALUE
+      color_y_(0x607d),  // ESP_ZB_ZCL_COLOR_CONTROL_CURRENT_Y_DEF_VALUE
+      path_(ColorPath::HueSat)
 {
 }
 
@@ -65,6 +70,7 @@ void RgbLed::set_hue_sat(uint16_t hue, uint8_t saturation)
 {
     hue_ = hue;
     saturation_ = saturation;
+    path_ = ColorPath::HueSat;
     render();
 }
 
@@ -73,6 +79,15 @@ void RgbLed::set_hsb(uint16_t hue, uint8_t saturation, uint8_t brightness)
     hue_ = hue;
     saturation_ = saturation;
     brightness_ = brightness;
+    path_ = ColorPath::HueSat;
+    render();
+}
+
+void RgbLed::set_xy(uint16_t color_x, uint16_t color_y)
+{
+    color_x_ = color_x;
+    color_y_ = color_y;
+    path_ = ColorPath::XY;
     render();
 }
 
@@ -87,12 +102,48 @@ void RgbLed::render()
     }
 
     uint8_t r, g, b;
-    hsv_to_rgb(hue_, saturation_, brightness_, r, g, b);
+    if (path_ == ColorPath::XY) {
+        xy_to_rgb(color_x_, color_y_, brightness_, r, g, b);
+    } else {
+        hsv_to_rgb(hue_, saturation_, brightness_, r, g, b);
+    }
 
     for (uint32_t i = 0; i < led_count_; ++i) {
         led_strip_set_pixel(strip_, i, r, g, b);
     }
     led_strip_refresh(strip_);
+}
+
+void RgbLed::xy_to_rgb(uint16_t x16, uint16_t y16, uint8_t bri, uint8_t &r, uint8_t &g, uint8_t &b)
+{
+    // Zigbee CurrentX/Y are uint16 representing CIE 1931 chromaticity 0..1
+    float x = x16 / 65535.0f;
+    float y = y16 / 65535.0f;
+    if (y < 1e-4f) {
+        y = 1e-4f;
+    }
+    float Y = bri / 255.0f;
+    float X = (Y / y) * x;
+    float Z = (Y / y) * (1.0f - x - y);
+
+    // CIE XYZ -> linear sRGB (D65)
+    float lr = X * 3.2404542f - Y * 1.5371385f - Z * 0.4985314f;
+    float lg = -X * 0.9692660f + Y * 1.8760108f + Z * 0.0415560f;
+    float lb = X * 0.0556434f - Y * 0.2040259f + Z * 1.0572252f;
+
+    auto gamma = [](float v) -> float {
+        if (v <= 0.0f) {
+            return 0.0f;
+        }
+        if (v >= 1.0f) {
+            return 1.0f;
+        }
+        return v <= 0.0031308f ? 12.92f * v : 1.055f * powf(v, 1.0f / 2.4f) - 0.055f;
+    };
+
+    r = static_cast<uint8_t>(gamma(lr) * 255.0f + 0.5f);
+    g = static_cast<uint8_t>(gamma(lg) * 255.0f + 0.5f);
+    b = static_cast<uint8_t>(gamma(lb) * 255.0f + 0.5f);
 }
 
 void RgbLed::hsv_to_rgb(uint16_t h, uint8_t s, uint8_t v, uint8_t &r, uint8_t &g, uint8_t &b)

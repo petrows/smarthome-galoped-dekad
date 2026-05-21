@@ -44,9 +44,23 @@ class RgbLed
 
     void set_hsb(uint16_t hue, uint8_t saturation, uint8_t brightness);
 
+    // CIE 1931 xy chromaticity, each 0..65535 mapping 0..1
+    void set_xy(uint16_t color_x, uint16_t color_y);
+    uint16_t color_x() const
+    {
+        return color_x_;
+    }
+    uint16_t color_y() const
+    {
+        return color_y_;
+    }
+
    private:
+    enum class ColorPath { HueSat, XY };
+
     void render();
     static void hsv_to_rgb(uint16_t h, uint8_t s, uint8_t v, uint8_t &r, uint8_t &g, uint8_t &b);
+    static void xy_to_rgb(uint16_t x16, uint16_t y16, uint8_t bri, uint8_t &r, uint8_t &g, uint8_t &b);
 
     gpio_num_t pin_;
     spi_host_device_t spi_host_;
@@ -58,4 +72,7 @@ class RgbLed
     uint8_t brightness_;
     uint16_t hue_;
     uint8_t saturation_;
+    uint16_t color_x_;
+    uint16_t color_y_;
+    ColorPath path_;
 };

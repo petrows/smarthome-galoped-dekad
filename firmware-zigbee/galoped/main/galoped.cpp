@@ -68,6 +68,12 @@ void apply_attr(const esp_zb_zcl_set_attr_value_message_t *msg)
             uint8_t sat = *reinterpret_cast<uint8_t *>(msg->attribute.data.value);
             uint8_t sat_8 = static_cast<uint8_t>((uint32_t)sat * 255u / 254u);
             g_led->set_hue_sat(g_led->hue(), sat_8);
+        } else if (msg->attribute.id == ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_X_ID) {
+            uint16_t x16 = *reinterpret_cast<uint16_t *>(msg->attribute.data.value);
+            g_led->set_xy(x16, g_led->color_y());
+        } else if (msg->attribute.id == ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_Y_ID) {
+            uint16_t y16 = *reinterpret_cast<uint16_t *>(msg->attribute.data.value);
+            g_led->set_xy(g_led->color_x(), y16);
         }
         break;
     }
@@ -162,10 +168,11 @@ void zb_task(void *)
 
     esp_zb_color_dimmable_light_cfg_t light_cfg = ESP_ZB_DEFAULT_COLOR_DIMMABLE_LIGHT_CONFIG();
     light_cfg.basic_cfg.power_source = ESP_ZB_ZCL_BASIC_POWER_SOURCE_MAINS_SINGLE_PHASE;
-    // Switch from default XY (0x01) to Hue/Saturation (0x00) mode and advertise it
-    light_cfg.color_cfg.color_mode = 0x00;
-    light_cfg.color_cfg.enhanced_color_mode = 0x00;
-    light_cfg.color_cfg.color_capabilities = 0x0001;  // bit 0: HueSat supported
+    // Advertise both XY and Hue/Saturation; coordinators (z2m, ZHA) typically drive
+    // color via MoveToColor (XY) regardless of color_mode, so we must accept both.
+    light_cfg.color_cfg.color_mode = 0x01;            // XY (matches z2m's default command)
+    light_cfg.color_cfg.enhanced_color_mode = 0x01;   // XY
+    light_cfg.color_cfg.color_capabilities = 0x0009;  // bit 0 HueSat | bit 3 XY
     esp_zb_ep_list_t *ep_list = esp_zb_color_dimmable_light_ep_create(HA_ENDPOINT, &light_cfg);
 
     esp_zb_cluster_list_t *clusters = esp_zb_ep_list_get_ep(ep_list, HA_ENDPOINT);

@@ -2,7 +2,7 @@
 
 #include "esp_log.h"
 
-static const char *TAG = "Button";
+static const char *TAG = "BTN";
 
 namespace
 {
