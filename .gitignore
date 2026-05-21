@@ -13,3 +13,15 @@
 manual/*.out
 # This is generated artifact
 /manual/manual.pdf
+
+# ESP-IDF (firmware-zigbee/galoped)
+/firmware-zigbee/galoped/build/
+/firmware-zigbee/galoped/sdkconfig
+/firmware-zigbee/galoped/sdkconfig.old
+/firmware-zigbee/galoped/managed_components/
+/firmware-zigbee/galoped/dependencies.lock
+
+# ESP-IDF generated / editor artifacts
+/firmware-zigbee/galoped/compile_commands.json
+/firmware-zigbee/galoped/.cache/
+/firmware-zigbee/galoped/.vscode/
