@@ -43,12 +43,173 @@ std::unique_ptr<Button> g_button;
 std::unique_ptr<esp32_vid6608_rmt> g_drive_1;
 std::unique_ptr<esp32_vid6608_rmt> g_drive_2;
 
-void apply_attr(const esp_zb_zcl_set_attr_value_message_t *msg)
+// --- Drive (VID6608) Zigbee endpoints --------------------------------------
+constexpr uint8_t DRIVE_1_ENDPOINT = 20;
+constexpr uint8_t DRIVE_2_ENDPOINT = 21;
+constexpr uint16_t DRIVE_CLUSTER_ID = 0xFC10;         // manufacturer-specific
+constexpr uint16_t DRIVE_ATTR_POSITION_ID = 0x0000;   // S32, RW, reportable
+constexpr uint16_t DRIVE_ATTR_MAX_STEPS_ID = 0x0001;  // U16, RO
+constexpr uint16_t DRIVE_ATTR_IS_MOVING_ID = 0x0002;  // BOOL, RO, reportable
+constexpr uint8_t DRIVE_CMD_RESET = 0x00;
+constexpr uint32_t POSITION_REPORT_PERIOD_MS = 500;
+
+esp_timer_handle_t g_drive_report_timer = nullptr;
+
+esp32_vid6608_rmt *drive_for_endpoint(uint8_t ep)
 {
-    if (!msg || !g_led || msg->info.dst_endpoint != HA_ENDPOINT) {
+    if (ep == DRIVE_1_ENDPOINT) {
+        return g_drive_1.get();
+    }
+    if (ep == DRIVE_2_ENDPOINT) {
+        return g_drive_2.get();
+    }
+    return nullptr;
+}
+
+void apply_drive_attr(const esp_zb_zcl_set_attr_value_message_t *msg, esp32_vid6608_rmt *drive)
+{
+    if (msg->info.cluster == ESP_ZB_ZCL_CLUSTER_ID_ANALOG_OUTPUT) {
+        if (msg->attribute.id == ESP_ZB_ZCL_ATTR_ANALOG_OUTPUT_PRESENT_VALUE_ID) {
+            float v = *reinterpret_cast<float *>(msg->attribute.data.value);
+            int32_t steps = static_cast<int32_t>(v + 0.5f);
+            ESP_LOGI(TAG, "EP %u AO PresentValue=%.1f -> setPos(%ld)", msg->info.dst_endpoint, v, (long)steps);
+            drive->setPos(steps);
+        }
+    } else if (msg->info.cluster == DRIVE_CLUSTER_ID) {
+        if (msg->attribute.id == DRIVE_ATTR_POSITION_ID) {
+            int32_t v = *reinterpret_cast<int32_t *>(msg->attribute.data.value);
+            ESP_LOGI(TAG, "EP %u Position=%ld", msg->info.dst_endpoint, (long)v);
+            drive->setPos(v);
+        }
+    }
+}
+
+void drive_reset_task(void *arg)
+{
+    auto *drive = static_cast<esp32_vid6608_rmt *>(arg);
+    ESP_LOGI(TAG, "Drive reset: zero() begin");
+    drive->zero();
+    ESP_LOGI(TAG, "Drive reset: zero() done");
+    vTaskDelete(nullptr);
+}
+
+void handle_custom_cmd(const esp_zb_zcl_custom_cluster_command_message_t *msg)
+{
+    if (!msg || msg->info.cluster != DRIVE_CLUSTER_ID) {
         return;
     }
+    auto *drive = drive_for_endpoint(msg->info.dst_endpoint);
+    if (!drive) {
+        return;
+    }
+    switch (msg->info.command.id) {
+    case DRIVE_CMD_RESET:
+        ESP_LOGI(TAG, "EP %u: reset command", msg->info.dst_endpoint);
+        // zero() blocks for the full sweep; run in its own task to keep Zigbee responsive
+        xTaskCreate(drive_reset_task, "drv_reset", 3072, drive, 4, nullptr);
+        break;
+    default:
+        ESP_LOGW(TAG, "EP %u: unknown custom cmd 0x%02x", msg->info.dst_endpoint, msg->info.command.id);
+        break;
+    }
+}
 
+void add_drive_endpoint(esp_zb_ep_list_t *ep_list, uint8_t endpoint, esp32_vid6608_rmt &drive)
+{
+    esp_zb_basic_cluster_cfg_t basic_cfg = {
+        .zcl_version = ESP_ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE,
+        .power_source = ESP_ZB_ZCL_BASIC_POWER_SOURCE_MAINS_SINGLE_PHASE,
+    };
+    esp_zb_attribute_list_t *basic = esp_zb_basic_cluster_create(&basic_cfg);
+    esp_zb_basic_cluster_add_attr(basic, ESP_ZB_ZCL_ATTR_BASIC_MANUFACTURER_NAME_ID,
+                                  const_cast<char *>(MANUFACTURER_NAME));
+    esp_zb_basic_cluster_add_attr(basic, ESP_ZB_ZCL_ATTR_BASIC_MODEL_IDENTIFIER_ID,
+                                  const_cast<char *>(MODEL_IDENTIFIER));
+
+    esp_zb_identify_cluster_cfg_t identify_cfg = {
+        .identify_time = 0,
+    };
+    esp_zb_attribute_list_t *identify = esp_zb_identify_cluster_create(&identify_cfg);
+
+    esp_zb_analog_output_cluster_cfg_t ao_cfg = {
+        .out_of_service = false,
+        .present_value = static_cast<float>(drive.getCurrentPosition()),
+        .status_flags = 0,
+    };
+    esp_zb_attribute_list_t *ao = esp_zb_analog_output_cluster_create(&ao_cfg);
+
+    int32_t init_pos = drive.getCurrentPosition();
+    uint16_t init_max = drive.getMaxSteps();
+    uint8_t init_moving = 0;
+    esp_zb_attribute_list_t *custom = esp_zb_zcl_attr_list_create(DRIVE_CLUSTER_ID);
+    esp_zb_custom_cluster_add_custom_attr(custom, DRIVE_ATTR_POSITION_ID, ESP_ZB_ZCL_ATTR_TYPE_S32,
+                                          ESP_ZB_ZCL_ATTR_ACCESS_READ_WRITE | ESP_ZB_ZCL_ATTR_ACCESS_REPORTING,
+                                          &init_pos);
+    esp_zb_custom_cluster_add_custom_attr(custom, DRIVE_ATTR_MAX_STEPS_ID, ESP_ZB_ZCL_ATTR_TYPE_U16,
+                                          ESP_ZB_ZCL_ATTR_ACCESS_READ_ONLY, &init_max);
+    esp_zb_custom_cluster_add_custom_attr(custom, DRIVE_ATTR_IS_MOVING_ID, ESP_ZB_ZCL_ATTR_TYPE_BOOL,
+                                          ESP_ZB_ZCL_ATTR_ACCESS_READ_ONLY | ESP_ZB_ZCL_ATTR_ACCESS_REPORTING,
+                                          &init_moving);
+
+    esp_zb_cluster_list_t *clusters = esp_zb_zcl_cluster_list_create();
+    esp_zb_cluster_list_add_basic_cluster(clusters, basic, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_identify_cluster(clusters, identify, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_analog_output_cluster(clusters, ao, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_custom_cluster(clusters, custom, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+
+    esp_zb_endpoint_config_t ep_cfg = {
+        .endpoint = endpoint,
+        .app_profile_id = ESP_ZB_AF_HA_PROFILE_ID,
+        .app_device_id = ESP_ZB_HA_LEVEL_CONTROLLABLE_OUTPUT_DEVICE_ID,
+        .app_device_version = 0,
+    };
+    esp_zb_ep_list_add_ep(ep_list, clusters, ep_cfg);
+}
+
+void drive_report_tick(void *)
+{
+    struct {
+        uint8_t ep;
+        esp32_vid6608_rmt *drive;
+    } entries[] = {
+        {DRIVE_1_ENDPOINT, g_drive_1.get()},
+        {DRIVE_2_ENDPOINT, g_drive_2.get()},
+    };
+
+    if (!esp_zb_lock_acquire(pdMS_TO_TICKS(100))) {
+        return;
+    }
+    for (auto &e : entries) {
+        if (!e.drive) {
+            continue;
+        }
+        float pv = static_cast<float>(e.drive->getCurrentPosition());
+        int32_t pos = e.drive->getCurrentPosition();
+        uint8_t moving = e.drive->isMoving() ? 1 : 0;
+
+        esp_zb_zcl_set_attribute_val(e.ep, ESP_ZB_ZCL_CLUSTER_ID_ANALOG_OUTPUT, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE,
+                                     ESP_ZB_ZCL_ATTR_ANALOG_OUTPUT_PRESENT_VALUE_ID, &pv, false);
+        esp_zb_zcl_set_attribute_val(e.ep, DRIVE_CLUSTER_ID, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE, DRIVE_ATTR_POSITION_ID,
+                                     &pos, false);
+        esp_zb_zcl_set_attribute_val(e.ep, DRIVE_CLUSTER_ID, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE, DRIVE_ATTR_IS_MOVING_ID,
+                                     &moving, false);
+    }
+    esp_zb_lock_release();
+}
+
+void start_drive_reporter()
+{
+    esp_timer_create_args_t args = {};
+    args.callback = &drive_report_tick;
+    args.dispatch_method = ESP_TIMER_TASK;
+    args.name = "drive_rpt";
+    ESP_ERROR_CHECK(esp_timer_create(&args, &g_drive_report_timer));
+    ESP_ERROR_CHECK(esp_timer_start_periodic(g_drive_report_timer, POSITION_REPORT_PERIOD_MS * 1000));
+}
+// ---------------------------------------------------------------------------
+
+void apply_light_attr(const esp_zb_zcl_set_attr_value_message_t *msg)
+{
     switch (msg->info.cluster) {
     case ESP_ZB_ZCL_CLUSTER_ID_ON_OFF:
         if (msg->attribute.id == ESP_ZB_ZCL_ATTR_ON_OFF_ON_OFF_ID) {
@@ -87,10 +248,33 @@ void apply_attr(const esp_zb_zcl_set_attr_value_message_t *msg)
     }
 }
 
+void apply_attr(const esp_zb_zcl_set_attr_value_message_t *msg)
+{
+    if (!msg) {
+        return;
+    }
+    if (msg->info.dst_endpoint == HA_ENDPOINT) {
+        if (g_led) {
+            apply_light_attr(msg);
+        }
+        return;
+    }
+    if (auto *drive = drive_for_endpoint(msg->info.dst_endpoint)) {
+        apply_drive_attr(msg, drive);
+    }
+}
+
 esp_err_t zb_action_handler(esp_zb_core_action_callback_id_t cb_id, const void *msg)
 {
-    if (cb_id == ESP_ZB_CORE_SET_ATTR_VALUE_CB_ID) {
+    switch (cb_id) {
+    case ESP_ZB_CORE_SET_ATTR_VALUE_CB_ID:
         apply_attr(static_cast<const esp_zb_zcl_set_attr_value_message_t *>(msg));
+        break;
+    case ESP_ZB_CORE_CMD_CUSTOM_CLUSTER_REQ_CB_ID:
+        handle_custom_cmd(static_cast<const esp_zb_zcl_custom_cluster_command_message_t *>(msg));
+        break;
+    default:
+        break;
     }
     return ESP_OK;
 }
@@ -197,9 +381,18 @@ void zb_task(void *)
     esp_zb_color_control_cluster_add_attr(color, ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_HUE_ID, &hue_default);
     esp_zb_color_control_cluster_add_attr(color, ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_SATURATION_ID, &sat_default);
 
+    if (g_drive_1) {
+        add_drive_endpoint(ep_list, DRIVE_1_ENDPOINT, *g_drive_1);
+    }
+    if (g_drive_2) {
+        add_drive_endpoint(ep_list, DRIVE_2_ENDPOINT, *g_drive_2);
+    }
+
     esp_zb_device_register(ep_list);
     esp_zb_core_action_handler_register(zb_action_handler);
     esp_zb_set_primary_network_channel_set(ESP_ZB_TRANSCEIVER_ALL_CHANNELS_MASK);
+
+    start_drive_reporter();
 
     ESP_ERROR_CHECK(esp_zb_start(false));
     esp_zb_stack_main_loop();
