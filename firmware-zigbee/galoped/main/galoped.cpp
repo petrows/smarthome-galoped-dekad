@@ -15,7 +15,6 @@
 
 #include "button.h"
 #include "rgb_led.h"
-
 #include "esp32_vid6608_rmt.h"
 
 #include <memory>

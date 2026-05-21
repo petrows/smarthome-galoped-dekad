@@ -5,14 +5,14 @@ on:
     paths:
       - '.github/workflows/ci-idf.yaml'
       - 'bin/build.sh'
-      - 'firmware-wifi/**'
+      - 'firmware-zigbee/**'
     branches:
       - '*'
   pull_request:
     paths:
       - '.github/workflows/ci-idf.yaml'
       - 'bin/build.sh'
-      - 'firmware-*/**'
+      - 'firmware-zigbee/**'
     branches:
       - '*'
 
