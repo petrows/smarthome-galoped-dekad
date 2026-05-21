@@ -1,3 +1,6 @@
 [submodule "firmware-wifi/tasmota"]
 	path = firmware-wifi/tasmota
 	url = git@github.com:petrows/Tasmota.git
+[submodule "firmware-zigbee/galoped/components/esp-32-vid6608-rmt"]
+	path = firmware-zigbee/galoped/components/esp-32-vid6608-rmt
+	url = git@github.com:petrows/esp-32-vid6608-rmt.git

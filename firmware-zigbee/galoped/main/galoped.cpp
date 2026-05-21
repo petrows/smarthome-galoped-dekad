@@ -16,6 +16,8 @@
 #include "button.h"
 #include "rgb_led.h"
 
+#include "esp32_vid6608_rmt.h"
+
 #include <memory>
 
 static const char *TAG = "GLP";
@@ -38,6 +40,8 @@ constexpr char MODEL_IDENTIFIER[] =
 
 std::unique_ptr<RgbLed> g_led;
 std::unique_ptr<Button> g_button;
+std::unique_ptr<esp32_vid6608_rmt> g_drive_1;
+std::unique_ptr<esp32_vid6608_rmt> g_drive_2;
 
 void apply_attr(const esp_zb_zcl_set_attr_value_message_t *msg)
 {
@@ -223,6 +227,26 @@ extern "C" void app_main()
     platform.radio_config.radio_mode = ZB_RADIO_MODE_NATIVE;
     platform.host_config.host_connection_mode = ZB_HOST_CONNECTION_MODE_NONE;
     ESP_ERROR_CHECK(esp_zb_platform_config(&platform));
+
+    // Activate drives
+    esp32_vid6608_rmt::Config cfg_1{
+        .stepPin = GPIO_NUM_14,
+        .dirPin = GPIO_NUM_18,
+        .maxSteps = 3950,  // 329.2°
+    };
+
+    g_drive_1 = std::make_unique<esp32_vid6608_rmt>(cfg_1);
+
+    esp32_vid6608_rmt::Config cfg_2{
+        .stepPin = GPIO_NUM_19,
+        .dirPin = GPIO_NUM_20,
+        .maxSteps = 3295,  // 274.5°
+    };
+
+    g_drive_2 = std::make_unique<esp32_vid6608_rmt>(cfg_2);
+
+    g_drive_1->zero();
+    g_drive_2->zero();
 
     g_led = std::make_unique<RgbLed>(LED_GPIO);
     ESP_ERROR_CHECK(g_led->init());
