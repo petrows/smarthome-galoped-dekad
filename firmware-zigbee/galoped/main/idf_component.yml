@@ -6,5 +6,3 @@ dependencies:
   ## Required IDF version
   idf:
     version: ">=5.5.0"
-  examples_utils:
-    path: ${IDF_PATH}/examples/zigbee/zb_common_components/examples_utils

@@ -413,6 +413,9 @@ extern "C" void esp_zb_app_signal_handler(esp_zb_app_signal_t *signal_struct)
 
 extern "C" void app_main()
 {
+    ESP_LOGI(TAG, "App startup");
+    ESP_LOGI(TAG, "Config: model %s, axis %d", GALOPED_MODEL, GALOPED_AXIS);
+
     ESP_ERROR_CHECK(nvs_flash_init());
 
     esp_zb_platform_config_t platform = {};
@@ -421,24 +424,32 @@ extern "C" void app_main()
     ESP_ERROR_CHECK(esp_zb_platform_config(&platform));
 
     // Activate drives
+    // All devices have at least 1
+    ESP_LOGI(TAG, "Init: drive 1");
     esp32_vid6608_rmt::Config cfg_1{
         .stepPin = GPIO_NUM_14,
         .dirPin = GPIO_NUM_18,
         .maxSteps = 3950,  // 329.2°
     };
-
     g_drive_1 = std::make_unique<esp32_vid6608_rmt>(cfg_1);
 
+#if GALOPED_AXIS > 1
+    // Devices with 2+
+    ESP_LOGI(TAG, "Init: drive 2");
     esp32_vid6608_rmt::Config cfg_2{
         .stepPin = GPIO_NUM_19,
         .dirPin = GPIO_NUM_20,
         .maxSteps = 3295,  // 274.5°
     };
-
     g_drive_2 = std::make_unique<esp32_vid6608_rmt>(cfg_2);
+#endif
 
-    g_drive_1->zero();
-    g_drive_2->zero();
+    if (g_drive_1) {
+        g_drive_1->zero();
+    }
+    if (g_drive_2) {
+        g_drive_2->zero();
+    }
 
     g_led = std::make_unique<RgbLed>(LED_GPIO);
     ESP_ERROR_CHECK(g_led->init());
@@ -447,6 +458,5 @@ extern "C" void app_main()
     g_button->on_long_press(factory_reset);
     ESP_ERROR_CHECK(g_button->init());
 
-    ESP_LOGI(TAG, "App startup");
     xTaskCreate(zb_task, "zb_main", 4096, nullptr, 5, nullptr);
 }
