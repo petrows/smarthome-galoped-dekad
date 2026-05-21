@@ -14,6 +14,7 @@
 #include "freertos/task.h"
 
 #include "button.h"
+#include "climate_sensor.h"
 #include "rgb_led.h"
 #include "esp32_vid6608_rmt.h"
 
@@ -41,6 +42,104 @@ std::unique_ptr<RgbLed> g_led;
 std::unique_ptr<Button> g_button;
 std::unique_ptr<esp32_vid6608_rmt> g_drive_1;
 std::unique_ptr<esp32_vid6608_rmt> g_drive_2;
+#if GALOPED_CLIMATE
+std::unique_ptr<ClimateSensor> g_climate;
+#endif
+
+#if GALOPED_CLIMATE
+// --- Climate sensor Zigbee endpoint ----------------------------------------
+constexpr gpio_num_t I2C_SDA_GPIO = GPIO_NUM_3;
+constexpr gpio_num_t I2C_SCL_GPIO = GPIO_NUM_2;
+constexpr uint8_t CLIMATE_ENDPOINT = 30;
+constexpr uint32_t CLIMATE_REPORT_PERIOD_MS = 30000;
+
+void add_climate_endpoint(esp_zb_ep_list_t *ep_list)
+{
+    esp_zb_basic_cluster_cfg_t basic_cfg = {
+        .zcl_version = ESP_ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE,
+        .power_source = ESP_ZB_ZCL_BASIC_POWER_SOURCE_MAINS_SINGLE_PHASE,
+    };
+    esp_zb_attribute_list_t *basic = esp_zb_basic_cluster_create(&basic_cfg);
+    esp_zb_basic_cluster_add_attr(basic, ESP_ZB_ZCL_ATTR_BASIC_MANUFACTURER_NAME_ID,
+                                  const_cast<char *>(MANUFACTURER_NAME));
+    esp_zb_basic_cluster_add_attr(basic, ESP_ZB_ZCL_ATTR_BASIC_MODEL_IDENTIFIER_ID,
+                                  const_cast<char *>(MODEL_IDENTIFIER));
+
+    esp_zb_identify_cluster_cfg_t identify_cfg = {.identify_time = 0};
+    esp_zb_attribute_list_t *identify = esp_zb_identify_cluster_create(&identify_cfg);
+
+    // 0x8000 = "invalid/unknown" sentinel per ZCL spec
+    esp_zb_temperature_meas_cluster_cfg_t temp_cfg = {
+        .measured_value = static_cast<int16_t>(0x8000),
+        .min_value = -4000,  // -40 °C in 0.01 °C
+        .max_value = 8500,   //  85 °C
+    };
+    esp_zb_attribute_list_t *temp = esp_zb_temperature_meas_cluster_create(&temp_cfg);
+
+    esp_zb_humidity_meas_cluster_cfg_t hum_cfg = {
+        .measured_value = 0xFFFF,
+        .min_value = 0,
+        .max_value = 10000,  // 100.00 % RH
+    };
+    esp_zb_attribute_list_t *hum = esp_zb_humidity_meas_cluster_create(&hum_cfg);
+
+    esp_zb_pressure_meas_cluster_cfg_t pres_cfg = {
+        .measured_value = static_cast<int16_t>(0x8000),
+        .min_value = 300,
+        .max_value = 1100,
+    };
+    esp_zb_attribute_list_t *pres = esp_zb_pressure_meas_cluster_create(&pres_cfg);
+
+    esp_zb_cluster_list_t *clusters = esp_zb_zcl_cluster_list_create();
+    esp_zb_cluster_list_add_basic_cluster(clusters, basic, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_identify_cluster(clusters, identify, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_temperature_meas_cluster(clusters, temp, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_humidity_meas_cluster(clusters, hum, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_pressure_meas_cluster(clusters, pres, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+
+    esp_zb_endpoint_config_t ep_cfg = {
+        .endpoint = CLIMATE_ENDPOINT,
+        .app_profile_id = ESP_ZB_AF_HA_PROFILE_ID,
+        .app_device_id = ESP_ZB_HA_TEMPERATURE_SENSOR_DEVICE_ID,
+        .app_device_version = 0,
+    };
+    esp_zb_ep_list_add_ep(ep_list, clusters, ep_cfg);
+}
+
+void climate_task(void *)
+{
+    while (true) {
+        if (g_climate) {
+            auto r = g_climate->read();
+
+            if (esp_zb_lock_acquire(pdMS_TO_TICKS(500))) {
+                if (r.temp_valid) {
+                    int16_t v = static_cast<int16_t>(r.temperature_c * 100.0f);
+                    esp_zb_zcl_set_attribute_val(CLIMATE_ENDPOINT, ESP_ZB_ZCL_CLUSTER_ID_TEMP_MEASUREMENT,
+                                                 ESP_ZB_ZCL_CLUSTER_SERVER_ROLE,
+                                                 ESP_ZB_ZCL_ATTR_TEMP_MEASUREMENT_VALUE_ID, &v, false);
+                }
+                if (r.humidity_valid) {
+                    uint16_t v = static_cast<uint16_t>(r.humidity_pct * 100.0f);
+                    esp_zb_zcl_set_attribute_val(CLIMATE_ENDPOINT, ESP_ZB_ZCL_CLUSTER_ID_REL_HUMIDITY_MEASUREMENT,
+                                                 ESP_ZB_ZCL_CLUSTER_SERVER_ROLE,
+                                                 ESP_ZB_ZCL_ATTR_REL_HUMIDITY_MEASUREMENT_VALUE_ID, &v, false);
+                }
+                if (r.pressure_valid) {
+                    int16_t v = static_cast<int16_t>(r.pressure_hpa);
+                    esp_zb_zcl_set_attribute_val(CLIMATE_ENDPOINT, ESP_ZB_ZCL_CLUSTER_ID_PRESSURE_MEASUREMENT,
+                                                 ESP_ZB_ZCL_CLUSTER_SERVER_ROLE,
+                                                 ESP_ZB_ZCL_ATTR_PRESSURE_MEASUREMENT_VALUE_ID, &v, false);
+                }
+                esp_zb_lock_release();
+                ESP_LOGI(TAG, "Climate: T=%.2f°C H=%.1f%% P=%.1fhPa", r.temperature_c, r.humidity_pct, r.pressure_hpa);
+            }
+        }
+        vTaskDelay(pdMS_TO_TICKS(CLIMATE_REPORT_PERIOD_MS));
+    }
+}
+// ---------------------------------------------------------------------------
+#endif  // GALOPED_CLIMATE
 
 // --- Drive (VID6608) Zigbee endpoints --------------------------------------
 constexpr uint8_t DRIVE_1_ENDPOINT = 20;
@@ -387,11 +486,22 @@ void zb_task(void *)
         add_drive_endpoint(ep_list, DRIVE_2_ENDPOINT, *g_drive_2);
     }
 
+#if GALOPED_CLIMATE
+    if (g_climate) {
+        add_climate_endpoint(ep_list);
+    }
+#endif
+
     esp_zb_device_register(ep_list);
     esp_zb_core_action_handler_register(zb_action_handler);
     esp_zb_set_primary_network_channel_set(ESP_ZB_TRANSCEIVER_ALL_CHANNELS_MASK);
 
     start_drive_reporter();
+#if GALOPED_CLIMATE
+    if (g_climate) {
+        xTaskCreate(climate_task, "climate", 4096, nullptr, 4, nullptr);
+    }
+#endif
 
     ESP_ERROR_CHECK(esp_zb_start(false));
     esp_zb_stack_main_loop();
@@ -457,6 +567,15 @@ extern "C" void app_main()
     g_button = std::make_unique<Button>(BUTTON_GPIO, LONG_PRESS_MS);
     g_button->on_long_press(factory_reset);
     ESP_ERROR_CHECK(g_button->init());
+
+#if GALOPED_CLIMATE
+    ESP_LOGI(TAG, "Init: climate sensor");
+    g_climate = std::make_unique<ClimateSensor>(I2C_SDA_GPIO, I2C_SCL_GPIO);
+    if (g_climate->init() != ESP_OK) {
+        ESP_LOGE(TAG, "Climate sensor init failed; endpoint will not be added");
+        g_climate.reset();
+    }
+#endif
 
     xTaskCreate(zb_task, "zb_main", 4096, nullptr, 5, nullptr);
 }

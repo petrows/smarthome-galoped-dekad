@@ -10,6 +10,7 @@
 //   EP 10 — Color Dimmable Light  (On/Off, Level, Color XY + HueSat)
 //   EP 20 — Drive 1 (Analog Output + custom cluster 0xFC10)
 //   EP 21 — Drive 2 (Analog Output + custom cluster 0xFC10)
+//   EP 30 — Climate sensor (Temperature/Humidity/Pressure, only on GALOPED_CLIMATE=1 builds)
 //
 // Custom cluster 0xFC10 attributes:
 //   0x0000 position   (int32, RW, reportable) — absolute step count
@@ -128,6 +129,7 @@ const definition = {
         light: 10,
         drive_1: 20,
         drive_2: 21,
+        climate: 30,
     }),
 
     meta: {multiEndpoint: true},
@@ -139,6 +141,7 @@ const definition = {
     fromZigbee: [
         fz.on_off, fz.brightness, fz.color_colortemp,
         fzAnalogOutput, fzDrive,
+        fz.temperature, fz.humidity, fz.pressure,
     ],
 
     toZigbee: [
@@ -156,6 +159,12 @@ const definition = {
         // also clamps server-side. Adjust if you change Config::maxSteps.
         ...driveExposes('_drive_1', 3950),
         ...driveExposes('_drive_2', 3295),
+        // Climate endpoint — exposed only on firmware built with GALOPED_CLIMATE=1.
+        // If absent on a given board, the device simply never reports these and
+        // z2m will show them as unavailable (no harm to non-climate variants).
+        e.temperature().withEndpoint('climate'),
+        e.humidity().withEndpoint('climate'),
+        e.pressure().withEndpoint('climate'),
     ],
 
     configure: async (device, coordinatorEndpoint, logger) => {
@@ -197,6 +206,27 @@ const definition = {
 
             // One-shot read so MaxSteps lands in state
             await ep.read(CLUSTER, ['maxSteps']);
+        }
+
+        // Climate endpoint — present only on GALOPED_CLIMATE=1 builds.
+        // Wrap in try/catch so a non-climate variant doesn't fail interview.
+        const climateEp = device.getEndpoint(30);
+        if (climateEp) {
+            try {
+                await reporting.bind(climateEp, coordinatorEndpoint,
+                    ['msTemperatureMeasurement', 'msRelativeHumidity', 'msPressureMeasurement']);
+                // Temperature: every 30..300 s, on >= 0.1 °C change
+                await reporting.temperature(climateEp,
+                    {min: 30, max: 300, change: 10});
+                // Humidity: every 30..300 s, on >= 1 %RH change
+                await reporting.humidity(climateEp,
+                    {min: 30, max: 300, change: 100});
+                // Pressure: every 60..600 s, on >= 1 hPa change
+                await reporting.pressure(climateEp,
+                    {min: 60, max: 600, change: 1});
+            } catch (err) {
+                logger.warn(`Climate EP 30 binding failed (firmware without GALOPED_CLIMATE?): ${err.message}`);
+            }
         }
     },
 };
