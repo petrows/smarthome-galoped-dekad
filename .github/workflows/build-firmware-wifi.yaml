@@ -27,7 +27,7 @@ jobs:
             model: biax-rgb
             pioenv: tasmota32c6
             defines: '-DGALOPED_AXIS=2 -DGALOPED_BACKLIGHT=0'
-    name: Firmware ${{ matrix.chip }} - ${{ matrix.model }}
+    name: Firmware WiFi ${{ matrix.chip }} - ${{ matrix.model }}
     steps:
       - uses: actions/checkout@v6
         with:

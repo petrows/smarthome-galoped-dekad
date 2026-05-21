@@ -14,9 +14,13 @@ jobs:
           - chip: esp32c6
             model: biax
             defines: '-DGALOPED_AXIS=2'
+          - chip: esp32c6
+            model: co2
+            defines: '-DGALOPED_AXIS=2 -DGALOPED_CLIMATE=1 -DGALOPED_CO2=1'
     container:
       image: espressif/idf:release-v6.0
       options: -u 2025:2025
+    name: Firmware Zigbee ${{ matrix.chip }} - ${{ matrix.model }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -36,7 +40,7 @@ jobs:
         run: |
             source /opt/esp/idf/export.sh
             idf.py build
-            idf.py merge-bin -o galoped-zigbee-firmware-${{ matrix.chip }}-biax-rgb.bin
+            idf.py merge-bin -o galoped-zigbee-firmware-${{ matrix.chip }}-${{ matrix.model }}.bin
             ccache -s
         env:
           IDF_TARGET: ${{ matrix.chip }}
@@ -50,5 +54,5 @@ jobs:
       - name: Archive firmware file
         uses: actions/upload-artifact@v7
         with:
-          name: galoped-zigbee-firmware-${{ matrix.chip }}-biax-rgb.bin
+          name: galoped-zigbee-firmware-${{ matrix.chip }}-${{ matrix.model }}.bin
           path: firmware-zigbee/galoped/build/galoped-zigbee-firmware-*.bin
