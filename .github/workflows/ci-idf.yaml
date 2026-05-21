@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/ci-idf.yaml'
+      - '.github/workflows/build-firmware-zigbee.yaml'
       - 'bin/build.sh'
       - 'firmware-zigbee/**'
     branches:

@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/ci-pio.yaml'
+      - '.github/workflows/build-firmware-wifi.yaml'
       - 'bin/build.sh'
       - 'firmware-wifi/**'
     branches:
