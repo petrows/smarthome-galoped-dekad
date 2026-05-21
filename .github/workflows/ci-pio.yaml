@@ -15,8 +15,12 @@ on:
       - 'firmware-wifi/**'
     branches:
       - '*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-firmware:
+  build-firmware-wifi:
     uses: ./.github/workflows/build-firmware-wifi.yaml
     secrets: inherit # pass all secrets
-

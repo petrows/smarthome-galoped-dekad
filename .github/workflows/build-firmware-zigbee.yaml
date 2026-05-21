@@ -20,6 +20,7 @@ jobs:
           key: idf-zigbee-${{ matrix.target }}
       - name: Build ${{ matrix.target }}
         shell: bash
+        working-directory: firmware-zigbee/galoped
         run: |
             source /opt/esp/idf/export.sh
             idf.py build

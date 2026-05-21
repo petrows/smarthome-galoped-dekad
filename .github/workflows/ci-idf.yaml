@@ -15,8 +15,13 @@ on:
       - 'firmware-*/**'
     branches:
       - '*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-firmware:
+  build-firmware-zigbee:
     uses: ./.github/workflows/build-firmware-zigbee.yaml
     secrets: inherit # pass all secrets
 
