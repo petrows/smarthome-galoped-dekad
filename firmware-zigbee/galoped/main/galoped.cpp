@@ -25,8 +25,8 @@ static const char *TAG = "GLP";
 namespace
 {
 
-constexpr gpio_num_t BUTTON_GPIO = GPIO_NUM_9;
-constexpr gpio_num_t LED_GPIO = GPIO_NUM_8;
+constexpr gpio_num_t BUTTON_GPIO = static_cast<gpio_num_t>(CONFIG_GALOPED_BUTTON_GPIO);
+constexpr gpio_num_t LED_GPIO = static_cast<gpio_num_t>(CONFIG_GALOPED_LED_GPIO);
 constexpr uint8_t HA_ENDPOINT = 10;
 constexpr uint32_t LONG_PRESS_MS = 3000;
 
@@ -48,8 +48,8 @@ std::unique_ptr<ClimateSensor> g_climate;
 
 #if GALOPED_CLIMATE
 // --- Climate sensor Zigbee endpoint ----------------------------------------
-constexpr gpio_num_t I2C_SDA_GPIO = GPIO_NUM_3;
-constexpr gpio_num_t I2C_SCL_GPIO = GPIO_NUM_2;
+constexpr gpio_num_t I2C_SDA_GPIO = static_cast<gpio_num_t>(CONFIG_GALOPED_I2C_SDA_GPIO);
+constexpr gpio_num_t I2C_SCL_GPIO = static_cast<gpio_num_t>(CONFIG_GALOPED_I2C_SCL_GPIO);
 constexpr uint8_t CLIMATE_ENDPOINT = 30;
 constexpr uint32_t CLIMATE_REPORT_PERIOD_MS = 30000;
 
@@ -537,9 +537,9 @@ extern "C" void app_main()
     // All devices have at least 1
     ESP_LOGI(TAG, "Init: drive 1");
     esp32_vid6608_rmt::Config cfg_1{
-        .stepPin = GPIO_NUM_14,
-        .dirPin = GPIO_NUM_18,
-        .maxSteps = 3950,  // 329.2°
+        .stepPin = static_cast<gpio_num_t>(CONFIG_GALOPED_DRIVE_1_STEP_GPIO),
+        .dirPin = static_cast<gpio_num_t>(CONFIG_GALOPED_DRIVE_1_DIR_GPIO),
+        .maxSteps = CONFIG_GALOPED_DRIVE_1_MAX_STEPS,
     };
     g_drive_1 = std::make_unique<esp32_vid6608_rmt>(cfg_1);
 
@@ -547,9 +547,9 @@ extern "C" void app_main()
     // Devices with 2+
     ESP_LOGI(TAG, "Init: drive 2");
     esp32_vid6608_rmt::Config cfg_2{
-        .stepPin = GPIO_NUM_19,
-        .dirPin = GPIO_NUM_20,
-        .maxSteps = 3295,  // 274.5°
+        .stepPin = static_cast<gpio_num_t>(CONFIG_GALOPED_DRIVE_2_STEP_GPIO),
+        .dirPin = static_cast<gpio_num_t>(CONFIG_GALOPED_DRIVE_2_DIR_GPIO),
+        .maxSteps = CONFIG_GALOPED_DRIVE_2_MAX_STEPS,
     };
     g_drive_2 = std::make_unique<esp32_vid6608_rmt>(cfg_2);
 #endif

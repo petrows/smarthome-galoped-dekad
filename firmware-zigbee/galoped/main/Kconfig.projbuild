@@ -1,0 +1,77 @@
+menu "Galoped device"
+
+    comment "All GPIO numbers are chip pin numbers (0..30 on ESP32-C6/H2)."
+
+    config GALOPED_BUTTON_GPIO
+        int "Button GPIO"
+        range 0 30
+        default 9
+        help
+            Reset / factory-reset push button. Driven active-low with internal pull-up.
+
+    config GALOPED_LED_GPIO
+        int "RGB LED data GPIO"
+        range 0 30
+        default 8
+        help
+            WS2812 data line, driven via SPI MOSI.
+
+    menu "I2C climate sensor (BMP280 + AHT20)"
+
+        config GALOPED_I2C_SDA_GPIO
+            int "I2C SDA GPIO"
+            range 0 30
+            default 3
+
+        config GALOPED_I2C_SCL_GPIO
+            int "I2C SCL GPIO"
+            range 0 30
+            default 2
+
+    endmenu
+
+    menu "Drive 1 (VID6608)"
+
+        config GALOPED_DRIVE_1_STEP_GPIO
+            int "Step GPIO (f_sc)"
+            range 0 30
+            default 14
+
+        config GALOPED_DRIVE_1_DIR_GPIO
+            int "Direction GPIO (CC/CCW)"
+            range 0 30
+            default 18
+
+        config GALOPED_DRIVE_1_MAX_STEPS
+            int "Max steps per full sweep"
+            range 1 65535
+            default 3950
+            help
+                Total step count for the drive's full mechanical range
+                (e.g. 3950 ≈ 329.2°).
+
+    endmenu
+
+    menu "Drive 2 (VID6608)"
+
+        config GALOPED_DRIVE_2_STEP_GPIO
+            int "Step GPIO (f_sc)"
+            range 0 30
+            default 19
+
+        config GALOPED_DRIVE_2_DIR_GPIO
+            int "Direction GPIO (CC/CCW)"
+            range 0 30
+            default 20
+
+        config GALOPED_DRIVE_2_MAX_STEPS
+            int "Max steps per full sweep"
+            range 1 65535
+            default 3295
+            help
+                Total step count for the drive's full mechanical range
+                (e.g. 3295 ≈ 274.5°).
+
+    endmenu
+
+endmenu
