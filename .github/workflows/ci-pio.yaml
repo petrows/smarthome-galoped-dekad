@@ -1,0 +1,22 @@
+# Workflow to (re)build firmware files
+name: PlatformIO CI
+on:
+  push:
+    paths:
+      - '.github/workflows/ci-pio.yaml'
+      - 'bin/build.sh'
+      - 'firmware-wifi/**'
+    branches:
+      - '*'
+  pull_request:
+    paths:
+      - '.github/workflows/ci-pio.yaml'
+      - 'bin/build.sh'
+      - 'firmware-wifi/**'
+    branches:
+      - '*'
+jobs:
+  build-firmware:
+    uses: ./.github/workflows/build-firmware-wifi.yaml
+    secrets: inherit # pass all secrets
+

@@ -1,0 +1,35 @@
+name: Build Zigbee Firmware
+on:
+  workflow_call:
+jobs:
+  build:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        target:
+            - esp32c6
+    container:
+      image: espressif/idf:release-v6.0
+      options: -u 2025:2025
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v5
+        with:
+          path: |
+            ${{ github.workspace }}/.cache/ccache
+          key: idf-zigbee-${{ matrix.target }}
+      - name: Build ${{ matrix.target }}
+        shell: bash
+        run: |
+            source /opt/esp/idf/export.sh
+            idf.py build
+            ccache -s
+        env:
+          IDF_TARGET: ${{ matrix.target }}
+          IDF_CCACHE_ENABLE: "1"
+          CCACHE_DIR: ${{ github.workspace }}/.cache/ccache
+          TERM: xterm-256color
+          CLICOLOR_FORCE: "1"
+          FORCE_COLOR: "1"
+          PY_COLORS: "1"
+          CMAKE_COLOR_DIAGNOSTICS: "ON"

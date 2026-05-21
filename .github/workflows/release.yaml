@@ -9,11 +9,11 @@ permissions:
   contents: write
 
 jobs:
-  build-firmware:
-    uses: ./.github/workflows/build-firmware.yaml
+  build-firmware-wifi:
+    uses: ./.github/workflows/build-firmware-wifi.yaml
     secrets: inherit # pass all secrets
   build-release:
-    needs: build-firmware
+    needs: build-firmware-wifi
     runs-on: self-hosted
     container:
       image: ghcr.io/petrows/platformio:v4

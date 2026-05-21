@@ -1,22 +1,22 @@
 # Workflow to (re)build firmware files
-name: PlatformIO CI
+name: ESP-IDF CI
 on:
   push:
     paths:
-      - '.github/workflows/pio-ci.yaml'
+      - '.github/workflows/ci-idf.yaml'
       - 'bin/build.sh'
-      - 'firmware-*/**'
+      - 'firmware-wifi/**'
     branches:
       - '*'
   pull_request:
     paths:
-      - '.github/workflows/pio-ci.yaml'
+      - '.github/workflows/ci-idf.yaml'
       - 'bin/build.sh'
       - 'firmware-*/**'
     branches:
       - '*'
 jobs:
   build-firmware:
-    uses: ./.github/workflows/build-firmware.yaml
+    uses: ./.github/workflows/build-firmware-zigbee.yaml
     secrets: inherit # pass all secrets
 
