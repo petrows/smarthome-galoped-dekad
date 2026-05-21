@@ -6,7 +6,7 @@ jobs:
     runs-on: self-hosted
     strategy:
       matrix:
-        target:
+        chip:
             - esp32c6
     container:
       image: espressif/idf:release-v6.0
@@ -17,16 +17,17 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/.cache/ccache
-          key: idf-zigbee-${{ matrix.target }}
-      - name: Build ${{ matrix.target }}
+          key: idf-zigbee-${{ matrix.chip }}
+      - name: Build ${{ matrix.chip }}
         shell: bash
         working-directory: firmware-zigbee/galoped
         run: |
             source /opt/esp/idf/export.sh
             idf.py build
+            idf.py merge-bin -o galoped-zigbee-firmware-${{ matrix.chip }}-biax-rgb.bin
             ccache -s
         env:
-          IDF_TARGET: ${{ matrix.target }}
+          IDF_TARGET: ${{ matrix.chip }}
           IDF_CCACHE_ENABLE: "1"
           CCACHE_DIR: ${{ github.workspace }}/.cache/ccache
           TERM: xterm-256color
@@ -34,3 +35,8 @@ jobs:
           FORCE_COLOR: "1"
           PY_COLORS: "1"
           CMAKE_COLOR_DIAGNOSTICS: "ON"
+      - name: Archive firmware file
+        uses: actions/upload-artifact@v7
+        with:
+          name: galoped-zigbee-firmware-${{ matrix.chip }}-biax-rgb.bin
+          path: firmware-zigbee/galoped/galoped-zigbee-firmware-*.bin
