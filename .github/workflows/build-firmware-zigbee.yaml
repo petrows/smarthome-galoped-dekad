@@ -33,7 +33,7 @@ jobs:
         with:
           path: |
             ${{ github.workspace }}/.cache/ccache
-          key: idf-zigbee-${{ matrix.chip }}
+          key: idf-zigbee-${{ matrix.chip }}-${{ matrix.model }}
       - name: Build ${{ matrix.chip }}
         shell: bash
         working-directory: firmware-zigbee/galoped
