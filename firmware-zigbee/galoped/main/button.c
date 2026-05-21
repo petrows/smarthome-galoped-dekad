@@ -18,25 +18,26 @@ static void button_poll_task(void *arg)
     QueueHandle_t queue = (QueueHandle_t)arg;
 
     gpio_config_t io_conf = {
-        .pin_bit_mask  = (1ULL << BUTTON_GPIO),
-        .mode          = GPIO_MODE_INPUT,
-        .pull_up_en    = GPIO_PULLUP_ENABLE,
-        .pull_down_en  = GPIO_PULLDOWN_DISABLE,
-        .intr_type     = GPIO_INTR_DISABLE,
+        .pin_bit_mask = (1ULL << BUTTON_GPIO),
+        .mode = GPIO_MODE_INPUT,
+        .pull_up_en = GPIO_PULLUP_ENABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
+        .intr_type = GPIO_INTR_DISABLE,
     };
     ESP_ERROR_CHECK(gpio_config(&io_conf));
+
     ESP_LOGI(TAG, "Button polling started on GPIO%d", BUTTON_GPIO);
 
-    bool last_level   = true;   /* pulled high → not pressed */
-    bool long_fired   = false;
-    int64_t press_us  = 0;
+    bool last_level = true; /* pulled high → not pressed */
+    bool long_fired = false;
+    int64_t press_us = 0;
 
     while (1) {
-        bool level = gpio_get_level(BUTTON_GPIO);  /* active-low */
+        bool level = gpio_get_level(BUTTON_GPIO); /* active-low */
 
         if (!level && last_level) {
             /* Falling edge — press start */
-            press_us   = esp_timer_get_time();
+            press_us = esp_timer_get_time();
             long_fired = false;
             ESP_LOGD(TAG, "Press start");
 
@@ -61,7 +62,7 @@ static void button_poll_task(void *arg)
         }
 
         last_level = level;
-        vTaskDelay(pdMS_TO_TICKS(20));  /* 20 ms — poll interval + debounce */
+        vTaskDelay(pdMS_TO_TICKS(20)); /* 20 ms — poll interval + debounce */
     }
 }
 

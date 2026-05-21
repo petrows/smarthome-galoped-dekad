@@ -13,8 +13,8 @@
 extern "C" {
 #endif
 
-#define BUTTON_GPIO           9
-#define BUTTON_LONG_PRESS_MS  3000  /* Hold duration to trigger long press */
+#define BUTTON_GPIO          9
+#define BUTTON_LONG_PRESS_MS 3000 /* Hold duration to trigger long press */
 
 typedef enum {
     BUTTON_EVT_SHORT_PRESS,

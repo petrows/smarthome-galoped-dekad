@@ -121,5 +121,5 @@ void light_driver_blink_start(uint32_t period_ms);
 void light_driver_blink_stop(void);
 
 #ifdef __cplusplus
-} // extern "C"
+}  // extern "C"
 #endif
