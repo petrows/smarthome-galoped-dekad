@@ -45,4 +45,4 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: galoped-zigbee-firmware-${{ matrix.chip }}-biax-rgb.bin
-          path: firmware-zigbee/galoped/galoped-zigbee-firmware-*.bin
+          path: firmware-zigbee/galoped/build/galoped-zigbee-firmware-*.bin
