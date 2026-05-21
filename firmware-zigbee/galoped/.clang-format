@@ -1,0 +1,55 @@
+---
+Language: Cpp
+BasedOnStyle: Google
+
+# Indentation
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ContinuationIndentWidth: 4
+IndentCaseLabels: false
+IndentPPDirectives: None
+
+# Line length
+ColumnLimit: 120
+
+# Braces — functions on new line, control statements attached (Linux/K&R)
+BreakBeforeBraces: Linux
+
+# Allow / disallow short constructs on a single line
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+
+# Function arguments / parameters
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackArguments: true
+BinPackParameters: true
+
+# Pointers / references
+PointerAlignment: Right
+DerivePointerAlignment: false
+
+# Spacing
+SpaceAfterCStyleCast: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeParens: ControlStatements
+SpacesInSquareBrackets: false
+
+# Alignment
+AlignConsecutiveMacros: AcrossComments
+AlignTrailingComments: true
+
+# Includes — ESP-IDF preserves include order
+SortIncludes: false
+IncludeBlocks: Preserve
+
+# Comments
+ReflowComments: false
+
+# Misc
+KeepEmptyLinesAtTheStartOfBlocks: false
+MaxEmptyLinesToKeep: 1

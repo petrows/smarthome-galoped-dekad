@@ -1,0 +1,18 @@
+repos:
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+      - id: actionlint
+        files: ^\.github/workflows/.*\.(yml|yaml)$
+
+  - repo: https://github.com/pre-commit/mirrors-clang-format
+    rev: v19.1.7
+    hooks:
+      - id: clang-format
+        files: ^firmware-zigbee/galoped/main/.*\.(c|h|cpp|hpp|cc)$
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.44.0
+    hooks:
+      - id: markdownlint
+        files: ^doc/.*\.md$
