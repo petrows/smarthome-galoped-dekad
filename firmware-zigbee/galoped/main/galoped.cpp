@@ -29,6 +29,7 @@ namespace
 
 constexpr gpio_num_t BUTTON_GPIO = static_cast<gpio_num_t>(CONFIG_GALOPED_BUTTON_GPIO);
 constexpr gpio_num_t LED_GPIO = static_cast<gpio_num_t>(CONFIG_GALOPED_LED_GPIO);
+constexpr uint32_t LED_COUNT = CONFIG_GALOPED_LED_COUNT;
 constexpr uint8_t HA_ENDPOINT = 10;
 constexpr uint32_t LONG_PRESS_MS = 3000;
 
@@ -624,7 +625,7 @@ extern "C" void app_main()
         g_drive_2->zero();
     }
 
-    g_led = std::make_unique<RgbLed>(LED_GPIO);
+    g_led = std::make_unique<RgbLed>(LED_GPIO, SPI2_HOST, LED_COUNT);
     ESP_ERROR_CHECK(g_led->init());
 
     g_button = std::make_unique<Button>(BUTTON_GPIO, LONG_PRESS_MS);

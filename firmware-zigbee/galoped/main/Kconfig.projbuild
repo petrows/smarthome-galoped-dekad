@@ -12,9 +12,16 @@ menu "Galoped device"
     config GALOPED_LED_GPIO
         int "RGB LED data GPIO"
         range 0 30
-        default 8
+        default 6
         help
             WS2812 data line, driven via SPI MOSI.
+
+    config GALOPED_LED_COUNT
+        int "RGB LED count"
+        range 1 256
+        default 40
+        help
+            Number of WS2812 pixels chained on the data line.
 
     menu "I2C climate sensor (BMP280 + AHT20)"
 
