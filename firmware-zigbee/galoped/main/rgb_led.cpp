@@ -14,11 +14,8 @@ RgbLed::RgbLed(gpio_num_t data_gpio, spi_host_device_t spi_host, uint32_t led_co
       strip_(nullptr),
       on_(false),
       brightness_(255),
-      hue_(0),
-      saturation_(0),
       color_x_(0x616b),  // ESP_ZB_ZCL_COLOR_CONTROL_CURRENT_X_DEF_VALUE
-      color_y_(0x607d),  // ESP_ZB_ZCL_COLOR_CONTROL_CURRENT_Y_DEF_VALUE
-      path_(ColorPath::HueSat)
+      color_y_(0x607d)   // ESP_ZB_ZCL_COLOR_CONTROL_CURRENT_Y_DEF_VALUE
 {
 }
 
@@ -66,28 +63,10 @@ void RgbLed::set_brightness(uint8_t brightness)
     render();
 }
 
-void RgbLed::set_hue_sat(uint16_t hue, uint8_t saturation)
-{
-    hue_ = hue;
-    saturation_ = saturation;
-    path_ = ColorPath::HueSat;
-    render();
-}
-
-void RgbLed::set_hsb(uint16_t hue, uint8_t saturation, uint8_t brightness)
-{
-    hue_ = hue;
-    saturation_ = saturation;
-    brightness_ = brightness;
-    path_ = ColorPath::HueSat;
-    render();
-}
-
 void RgbLed::set_xy(uint16_t color_x, uint16_t color_y)
 {
     color_x_ = color_x;
     color_y_ = color_y;
-    path_ = ColorPath::XY;
     render();
 }
 
@@ -102,11 +81,7 @@ void RgbLed::render()
     }
 
     uint8_t r, g, b;
-    if (path_ == ColorPath::XY) {
-        xy_to_rgb(color_x_, color_y_, brightness_, r, g, b);
-    } else {
-        hsv_to_rgb(hue_, saturation_, brightness_, r, g, b);
-    }
+    xy_to_rgb(color_x_, color_y_, brightness_, r, g, b);
 
     for (uint32_t i = 0; i < led_count_; ++i) {
         led_strip_set_pixel(strip_, i, r, g, b);
@@ -169,47 +144,4 @@ void RgbLed::xy_to_rgb(uint16_t x16, uint16_t y16, uint8_t bri, uint8_t &r, uint
     r = static_cast<uint8_t>(gamma(lr) * 255.0f + 0.5f);
     g = static_cast<uint8_t>(gamma(lg) * 255.0f + 0.5f);
     b = static_cast<uint8_t>(gamma(lb) * 255.0f + 0.5f);
-}
-
-void RgbLed::hsv_to_rgb(uint16_t h, uint8_t s, uint8_t v, uint8_t &r, uint8_t &g, uint8_t &b)
-{
-    h %= 360;
-    uint32_t rgb_max = v;
-    uint32_t rgb_min = rgb_max * (255 - s) / 255;
-    uint32_t i = h / 60;
-    uint32_t diff = h % 60;
-    uint32_t adj = (rgb_max - rgb_min) * diff / 60;
-
-    switch (i) {
-    case 0:
-        r = rgb_max;
-        g = rgb_min + adj;
-        b = rgb_min;
-        break;
-    case 1:
-        r = rgb_max - adj;
-        g = rgb_max;
-        b = rgb_min;
-        break;
-    case 2:
-        r = rgb_min;
-        g = rgb_max;
-        b = rgb_min + adj;
-        break;
-    case 3:
-        r = rgb_min;
-        g = rgb_max - adj;
-        b = rgb_max;
-        break;
-    case 4:
-        r = rgb_min + adj;
-        g = rgb_min;
-        b = rgb_max;
-        break;
-    default:
-        r = rgb_max;
-        g = rgb_min;
-        b = rgb_max - adj;
-        break;
-    }
 }

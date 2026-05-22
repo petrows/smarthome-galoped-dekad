@@ -395,16 +395,7 @@ void apply_light_attr(const esp_zb_zcl_set_attr_value_message_t *msg)
         break;
 
     case ESP_ZB_ZCL_CLUSTER_ID_COLOR_CONTROL: {
-        if (msg->attribute.id == ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_HUE_ID) {
-            uint8_t hue = *reinterpret_cast<uint8_t *>(msg->attribute.data.value);
-            // Zigbee CurrentHue is 0..254 representing 0..360°
-            uint16_t hue_deg = static_cast<uint16_t>((uint32_t)hue * 360u / 254u);
-            g_led->set_hue_sat(hue_deg, g_led->saturation());
-        } else if (msg->attribute.id == ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_SATURATION_ID) {
-            uint8_t sat = *reinterpret_cast<uint8_t *>(msg->attribute.data.value);
-            uint8_t sat_8 = static_cast<uint8_t>((uint32_t)sat * 255u / 254u);
-            g_led->set_hue_sat(g_led->hue(), sat_8);
-        } else if (msg->attribute.id == ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_X_ID) {
+        if (msg->attribute.id == ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_X_ID) {
             uint16_t x16 = *reinterpret_cast<uint16_t *>(msg->attribute.data.value);
             g_led->set_xy(x16, g_led->color_y());
         } else if (msg->attribute.id == ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_Y_ID) {
@@ -527,11 +518,9 @@ void zb_task(void *)
 
     esp_zb_color_dimmable_light_cfg_t light_cfg = ESP_ZB_DEFAULT_COLOR_DIMMABLE_LIGHT_CONFIG();
     light_cfg.basic_cfg.power_source = ESP_ZB_ZCL_BASIC_POWER_SOURCE_MAINS_SINGLE_PHASE;
-    // Advertise both XY and Hue/Saturation; coordinators (z2m, ZHA) typically drive
-    // color via MoveToColor (XY) regardless of color_mode, so we must accept both.
     light_cfg.color_cfg.color_mode = 0x01;            // XY (matches z2m's default command)
     light_cfg.color_cfg.enhanced_color_mode = 0x01;   // XY
-    light_cfg.color_cfg.color_capabilities = 0x0009;  // bit 0 HueSat | bit 3 XY
+    light_cfg.color_cfg.color_capabilities = 0x0008;  // bit 3 XY only
     esp_zb_ep_list_t *ep_list = esp_zb_color_dimmable_light_ep_create(HA_ENDPOINT, &light_cfg);
 
     esp_zb_cluster_list_t *clusters = esp_zb_ep_list_get_ep(ep_list, HA_ENDPOINT);
@@ -541,16 +530,6 @@ void zb_task(void *)
                                   const_cast<char *>(MANUFACTURER_NAME));
     esp_zb_basic_cluster_add_attr(basic, ESP_ZB_ZCL_ATTR_BASIC_MODEL_IDENTIFIER_ID,
                                   const_cast<char *>(MODEL_IDENTIFIER));
-
-    // Color Control cluster created by the helper only carries CurrentX/CurrentY by
-    // default; explicitly add CurrentHue and CurrentSaturation so commands targeting
-    // them land in our ESP_ZB_CORE_SET_ATTR_VALUE_CB_ID handler.
-    esp_zb_attribute_list_t *color =
-        esp_zb_cluster_list_get_cluster(clusters, ESP_ZB_ZCL_CLUSTER_ID_COLOR_CONTROL, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
-    uint8_t hue_default = ESP_ZB_ZCL_COLOR_CONTROL_CURRENT_HUE_DEFAULT_VALUE;
-    uint8_t sat_default = ESP_ZB_ZCL_COLOR_CONTROL_CURRENT_SATURATION_DEFAULT_VALUE;
-    esp_zb_color_control_cluster_add_attr(color, ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_HUE_ID, &hue_default);
-    esp_zb_color_control_cluster_add_attr(color, ESP_ZB_ZCL_ATTR_COLOR_CONTROL_CURRENT_SATURATION_ID, &sat_default);
 
     if (g_drive_1) {
         add_drive_endpoint(ep_list, DRIVE_1_ENDPOINT, *g_drive_1);
