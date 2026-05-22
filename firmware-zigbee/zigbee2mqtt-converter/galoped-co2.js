@@ -31,6 +31,18 @@ const ea = exposes.access;
 const CLUSTER = 'manuSpecificGalopedDrive';
 const CLUSTER_ID = 0xfc10;
 
+// z-h-c's built-in fz.pressure / fz.co2 (this version) don't apply the
+// multiEndpoint suffix, so reports come out as bare 'pressure' / 'co2'.
+// This helper mirrors what utils.postfixWithEndpointName does for fz.temperature.
+function endpointSuffix(msg, model) {
+    if (!model.meta || !model.meta.multiEndpoint) return '';
+    const map = model.endpoint(msg.device);
+    for (const name in map) {
+        if (map[name] === msg.endpoint.ID) return '_' + name;
+    }
+    return '';
+}
+
 function addDriveCluster(device) {
     if (device.customClusters && device.customClusters[CLUSTER]) {
         return;
@@ -49,18 +61,19 @@ function addDriveCluster(device) {
     });
 }
 
-// With meta.multiEndpoint=true, z2m attaches the endpoint suffix to outgoing
-// MQTT keys and strips it before tz lookup, so converters return *unsuffixed*
-// keys and tz uses bare keys like 'position' / 'reset'.
+// z2m only adds the endpoint suffix to tx (outgoing /set) keys and tz lookups.
+// Incoming fz must return already-suffixed keys, otherwise state ends up with
+// bare `position` / `is_moving` etc. that collide between endpoints.
 
 const fzDrive = {
     cluster: CLUSTER,
     type: ['attributeReport', 'readResponse'],
     convert: (model, msg, publish, options, meta) => {
+        const s = endpointSuffix(msg, model);
         const result = {};
-        if (msg.data.position !== undefined) result.position = msg.data.position;
-        if (msg.data.isMoving !== undefined) result.is_moving = msg.data.isMoving !== 0;
-        if (msg.data.maxSteps !== undefined) result.max_steps = msg.data.maxSteps;
+        if (msg.data.position !== undefined) result['position' + s] = msg.data.position;
+        if (msg.data.isMoving !== undefined) result['is_moving' + s] = msg.data.isMoving !== 0;
+        if (msg.data.maxSteps !== undefined) result['max_steps' + s] = msg.data.maxSteps;
         return result;
     },
 };
@@ -70,7 +83,26 @@ const fzAnalogOutput = {
     type: ['attributeReport', 'readResponse'],
     convert: (model, msg, publish, options, meta) => {
         if (msg.data.presentValue === undefined) return;
-        return {position: Math.round(msg.data.presentValue)};
+        return {['position' + endpointSuffix(msg, model)]: Math.round(msg.data.presentValue)};
+    },
+};
+
+const fzPressure = {
+    cluster: 'msPressureMeasurement',
+    type: ['attributeReport', 'readResponse'],
+    convert: (model, msg, publish, options, meta) => {
+        if (msg.data.measuredValue === undefined) return;
+        return {['pressure' + endpointSuffix(msg, model)]: msg.data.measuredValue};
+    },
+};
+
+const fzCO2 = {
+    cluster: 'msCO2',
+    type: ['attributeReport', 'readResponse'],
+    convert: (model, msg, publish, options, meta) => {
+        if (msg.data.measuredValue === undefined) return;
+        // ZCL stores CO2 as fraction of 1; convert back to ppm.
+        return {['co2' + endpointSuffix(msg, model)]: Math.round(msg.data.measuredValue * 1000000)};
     },
 };
 
@@ -137,8 +169,8 @@ const definition = {
     fromZigbee: [
         fz.on_off, fz.brightness, fz.color_colortemp,
         fzAnalogOutput, fzDrive,
-        fz.temperature, fz.humidity, fz.pressure,
-        fz.co2,
+        fz.temperature, fz.humidity, fzPressure,
+        fzCO2,
     ],
 
     toZigbee: [
