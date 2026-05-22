@@ -12,6 +12,10 @@ if(NOT DEFINED GALOPED_CLIMATE)
     set(GALOPED_CLIMATE 0)
 endif()
 
+if(NOT DEFINED GALOPED_CO2)
+    set(GALOPED_CO2 0)
+endif()
+
 idf_component_register(
     SRC_DIRS  "."
     INCLUDE_DIRS "."
@@ -27,4 +31,5 @@ target_compile_definitions(${COMPONENT_LIB} PRIVATE
     GALOPED_MODEL="${GALOPED_MODEL}"
     GALOPED_AXIS=${GALOPED_AXIS}
     GALOPED_CLIMATE=${GALOPED_CLIMATE}
+    GALOPED_CO2=${GALOPED_CO2}
 )

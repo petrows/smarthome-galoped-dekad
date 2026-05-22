@@ -16,8 +16,10 @@
 #include "button.h"
 #include "climate_sensor.h"
 #include "rgb_led.h"
+#include "senseair_s8.h"
 #include "esp32_vid6608_rmt.h"
 
+#include <cmath>
 #include <memory>
 
 static const char *TAG = "GLP";
@@ -44,6 +46,9 @@ std::unique_ptr<esp32_vid6608_rmt> g_drive_1;
 std::unique_ptr<esp32_vid6608_rmt> g_drive_2;
 #if GALOPED_CLIMATE
 std::unique_ptr<ClimateSensor> g_climate;
+#endif
+#if GALOPED_CO2
+std::unique_ptr<SenseAirS8> g_co2;
 #endif
 
 #if GALOPED_CLIMATE
@@ -140,6 +145,74 @@ void climate_task(void *)
 }
 // ---------------------------------------------------------------------------
 #endif  // GALOPED_CLIMATE
+
+#if GALOPED_CO2
+// --- SenseAir S8 CO2 sensor Zigbee endpoint --------------------------------
+constexpr gpio_num_t S8_TX_GPIO = static_cast<gpio_num_t>(CONFIG_GALOPED_S8_UART_TX_GPIO);
+constexpr gpio_num_t S8_RX_GPIO = static_cast<gpio_num_t>(CONFIG_GALOPED_S8_UART_RX_GPIO);
+constexpr uart_port_t S8_UART_PORT = UART_NUM_1;
+constexpr uint8_t CO2_ENDPOINT = 40;
+constexpr uint32_t CO2_REPORT_PERIOD_MS = 30000;
+
+void add_co2_endpoint(esp_zb_ep_list_t *ep_list)
+{
+    esp_zb_basic_cluster_cfg_t basic_cfg = {
+        .zcl_version = ESP_ZB_ZCL_BASIC_ZCL_VERSION_DEFAULT_VALUE,
+        .power_source = ESP_ZB_ZCL_BASIC_POWER_SOURCE_MAINS_SINGLE_PHASE,
+    };
+    esp_zb_attribute_list_t *basic = esp_zb_basic_cluster_create(&basic_cfg);
+    esp_zb_basic_cluster_add_attr(basic, ESP_ZB_ZCL_ATTR_BASIC_MANUFACTURER_NAME_ID,
+                                  const_cast<char *>(MANUFACTURER_NAME));
+    esp_zb_basic_cluster_add_attr(basic, ESP_ZB_ZCL_ATTR_BASIC_MODEL_IDENTIFIER_ID,
+                                  const_cast<char *>(MODEL_IDENTIFIER));
+
+    esp_zb_identify_cluster_cfg_t identify_cfg = {.identify_time = 0};
+    esp_zb_attribute_list_t *identify = esp_zb_identify_cluster_create(&identify_cfg);
+
+    // ZCL CO2 cluster reports as fraction of 1 (e.g. 1000 ppm -> 0.001).
+    // NaN = "invalid/unknown" sentinel for the measured value.
+    esp_zb_carbon_dioxide_measurement_cluster_cfg_t co2_cfg = {
+        .measured_value = NAN,
+        .min_measured_value = 0.0f,
+        .max_measured_value = 0.01f,  // 10000 ppm — S8 range
+    };
+    esp_zb_attribute_list_t *co2 = esp_zb_carbon_dioxide_measurement_cluster_create(&co2_cfg);
+
+    esp_zb_cluster_list_t *clusters = esp_zb_zcl_cluster_list_create();
+    esp_zb_cluster_list_add_basic_cluster(clusters, basic, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_identify_cluster(clusters, identify, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+    esp_zb_cluster_list_add_carbon_dioxide_measurement_cluster(clusters, co2, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE);
+
+    esp_zb_endpoint_config_t ep_cfg = {
+        .endpoint = CO2_ENDPOINT,
+        .app_profile_id = ESP_ZB_AF_HA_PROFILE_ID,
+        .app_device_id = ESP_ZB_HA_SIMPLE_SENSOR_DEVICE_ID,
+        .app_device_version = 0,
+    };
+    esp_zb_ep_list_add_ep(ep_list, clusters, ep_cfg);
+}
+
+void co2_task(void *)
+{
+    while (true) {
+        if (g_co2) {
+            auto r = g_co2->read();
+            if (r.valid) {
+                float frac = r.co2_ppm / 1000000.0f;
+                if (esp_zb_lock_acquire(pdMS_TO_TICKS(500))) {
+                    esp_zb_zcl_set_attribute_val(
+                        CO2_ENDPOINT, ESP_ZB_ZCL_CLUSTER_ID_CARBON_DIOXIDE_MEASUREMENT, ESP_ZB_ZCL_CLUSTER_SERVER_ROLE,
+                        ESP_ZB_ZCL_ATTR_CARBON_DIOXIDE_MEASUREMENT_MEASURED_VALUE_ID, &frac, false);
+                    esp_zb_lock_release();
+                    ESP_LOGI(TAG, "CO2: %u ppm", r.co2_ppm);
+                }
+            }
+        }
+        vTaskDelay(pdMS_TO_TICKS(CO2_REPORT_PERIOD_MS));
+    }
+}
+// ---------------------------------------------------------------------------
+#endif  // GALOPED_CO2
 
 // --- Drive (VID6608) Zigbee endpoints --------------------------------------
 constexpr uint8_t DRIVE_1_ENDPOINT = 20;
@@ -492,6 +565,12 @@ void zb_task(void *)
     }
 #endif
 
+#if GALOPED_CO2
+    if (g_co2) {
+        add_co2_endpoint(ep_list);
+    }
+#endif
+
     esp_zb_device_register(ep_list);
     esp_zb_core_action_handler_register(zb_action_handler);
     esp_zb_set_primary_network_channel_set(ESP_ZB_TRANSCEIVER_ALL_CHANNELS_MASK);
@@ -500,6 +579,11 @@ void zb_task(void *)
 #if GALOPED_CLIMATE
     if (g_climate) {
         xTaskCreate(climate_task, "climate", 4096, nullptr, 4, nullptr);
+    }
+#endif
+#if GALOPED_CO2
+    if (g_co2) {
+        xTaskCreate(co2_task, "co2", 4096, nullptr, 4, nullptr);
     }
 #endif
 
@@ -574,6 +658,15 @@ extern "C" void app_main()
     if (g_climate->init() != ESP_OK) {
         ESP_LOGE(TAG, "Climate sensor init failed; endpoint will not be added");
         g_climate.reset();
+    }
+#endif
+
+#if GALOPED_CO2
+    ESP_LOGI(TAG, "Init: SenseAir S8");
+    g_co2 = std::make_unique<SenseAirS8>(S8_UART_PORT, S8_TX_GPIO, S8_RX_GPIO);
+    if (g_co2->init() != ESP_OK) {
+        ESP_LOGE(TAG, "SenseAir S8 init failed; endpoint will not be added");
+        g_co2.reset();
     }
 #endif
 

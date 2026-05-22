@@ -30,6 +30,20 @@ menu "Galoped device"
 
     endmenu
 
+    menu "SenseAir S8 CO2 sensor (UART)"
+
+        config GALOPED_S8_UART_TX_GPIO
+            int "UART TX GPIO (host -> sensor)"
+            range 0 30
+            default 1
+
+        config GALOPED_S8_UART_RX_GPIO
+            int "UART RX GPIO (sensor -> host)"
+            range 0 30
+            default 0
+
+    endmenu
+
     menu "Drive 1 (VID6608)"
 
         config GALOPED_DRIVE_1_STEP_GPIO
