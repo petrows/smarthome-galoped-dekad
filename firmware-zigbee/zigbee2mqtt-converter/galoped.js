@@ -7,11 +7,14 @@
 //     - galoped-converter.js
 //
 // The firmware advertises:
-//   EP 10 — Color Dimmable Light  (On/Off, Level, Color XY + HueSat)
+//   EP 10 — Color Dimmable Light  (On/Off, Level, Color XY)
 //   EP 20 — Drive 1 (Analog Output + custom cluster 0xFC10)
-//   EP 21 — Drive 2 (Analog Output + custom cluster 0xFC10)
-//   EP 30 — Climate sensor (Temperature/Humidity/Pressure, only on GALOPED_CLIMATE=1 builds)
-//   EP 40 — SenseAir S8 CO2 sensor (only on GALOPED_CO2=1 builds)
+//   EP 21 — Drive 2 (only on GALOPED_AXIS>1 builds)
+//   EP 30 — Climate sensor (Temperature/Humidity/Pressure, only on GALOPED_CLIMATE=1)
+//   EP 40 — SenseAir S8 CO2 sensor (only on GALOPED_CO2=1)
+//
+// The converter detects model variant by which endpoints are actually present,
+// so a single converter file covers moax / biax / co2 firmware builds.
 //
 // Custom cluster 0xFC10 attributes:
 //   0x0000 position   (int32, RW, reportable) — absolute step count
@@ -29,6 +32,20 @@ const ea = exposes.access;
 
 const CLUSTER = 'manuSpecificGalopedDrive';
 const CLUSTER_ID = 0xfc10;
+
+const EP_LIGHT = 10;
+const EP_DRIVE_1 = 20;
+const EP_DRIVE_2 = 21;
+const EP_CLIMATE = 30;
+const EP_CO2 = 40;
+
+// True if the device's interview captured an endpoint with this ID. When
+// `device` is a placeholder (e.g. during definition discovery) we return true
+// so every expose is shown — the runtime will gate again after the interview.
+function hasEp(device, id) {
+    if (!device || !Array.isArray(device.endpoints)) return true;
+    return device.endpoints.some((ep) => ep.ID === id);
+}
 
 // z-h-c's built-in fz.pressure / fz.co2 (this version) don't apply the
 // multiEndpoint suffix, so reports come out as bare 'pressure' / 'co2'.
@@ -152,13 +169,14 @@ const definition = {
     vendor: 'Galoped',
     description: 'Galoped Zigbee gauge — RGB indicator + 2 stepper drives',
 
-    endpoint: (device) => ({
-        light: 10,
-        drive_1: 20,
-        drive_2: 21,
-        climate: 30,
-        co2: 40,
-    }),
+    endpoint: (device) => {
+        const map = {light: EP_LIGHT};
+        if (hasEp(device, EP_DRIVE_1)) map.drive_1 = EP_DRIVE_1;
+        if (hasEp(device, EP_DRIVE_2)) map.drive_2 = EP_DRIVE_2;
+        if (hasEp(device, EP_CLIMATE)) map.climate = EP_CLIMATE;
+        if (hasEp(device, EP_CO2)) map.co2 = EP_CO2;
+        return map;
+    },
 
     meta: {multiEndpoint: true},
 
@@ -178,11 +196,11 @@ const definition = {
         tzPosition, tzReset,
     ],
 
-    // Exposes computed dynamically so position sliders honor each drive's
-    // maxSteps as reported by the firmware (custom cluster attribute 0x0001).
-    // configure() does a one-shot read of maxSteps; later refreshes pick up
-    // any firmware change. Falls back to U16 max if the value isn't cached
-    // yet (e.g. during initial discovery before interview completes).
+    // Exposes computed dynamically from the device's actual endpoint set:
+    // drive 2, climate, and CO2 only appear when their EPs were captured in
+    // the interview. Position sliders honor each drive's maxSteps as read
+    // from the custom cluster (0xFC10/0x0001) so the converter never needs
+    // recompiling when CONFIG_GALOPED_DRIVE_*_MAX_STEPS changes.
     exposes: (device, options) => {
         // Bridge calls exposes() at startup before onEvent has fired, so the
         // custom cluster name isn't resolvable yet — register it here too.
@@ -200,35 +218,41 @@ const definition = {
                 return 65535;
             }
         };
-        return [
+        const result = [
             e.light()
                 .withBrightness()
                 .withColor(['xy'])
                 .withEndpoint('light'),
-            ...driveExposes('drive_1', driveMax(20)),
-            ...driveExposes('drive_2', driveMax(21)),
-            // Climate endpoint — exposed only on firmware built with GALOPED_CLIMATE=1.
-            // If absent on a given board, the device simply never reports these and
-            // z2m will show them as unavailable (no harm to non-climate variants).
-            e.temperature().withEndpoint('climate'),
-            e.humidity().withEndpoint('climate'),
-            e.pressure().withEndpoint('climate'),
-            // CO2 endpoint — only on GALOPED_CO2=1 builds.
-            e.co2().withEndpoint('co2'),
         ];
+        if (hasEp(device, EP_DRIVE_1)) result.push(...driveExposes('drive_1', driveMax(EP_DRIVE_1)));
+        if (hasEp(device, EP_DRIVE_2)) result.push(...driveExposes('drive_2', driveMax(EP_DRIVE_2)));
+        if (hasEp(device, EP_CLIMATE)) {
+            result.push(
+                e.temperature().withEndpoint('climate'),
+                e.humidity().withEndpoint('climate'),
+                e.pressure().withEndpoint('climate'),
+            );
+        }
+        if (hasEp(device, EP_CO2)) {
+            result.push(e.co2().withEndpoint('co2'));
+        }
+        return result;
     },
 
     configure: async (device, coordinatorEndpoint, logger) => {
         addDriveCluster(device);
 
-        const lightEp = device.getEndpoint(10);
-        await reporting.bind(lightEp, coordinatorEndpoint,
-            ['genOnOff', 'genLevelCtrl', 'lightingColorCtrl']);
-        await reporting.onOff(lightEp);
-        await reporting.brightness(lightEp);
+        const lightEp = device.getEndpoint(EP_LIGHT);
+        if (lightEp) {
+            await reporting.bind(lightEp, coordinatorEndpoint,
+                ['genOnOff', 'genLevelCtrl', 'lightingColorCtrl']);
+            await reporting.onOff(lightEp);
+            await reporting.brightness(lightEp);
+        }
 
-        for (const epId of [20, 21]) {
+        for (const epId of [EP_DRIVE_1, EP_DRIVE_2]) {
             const ep = device.getEndpoint(epId);
+            if (!ep) continue;  // drive 2 absent on single-axis builds
             await reporting.bind(ep, coordinatorEndpoint, ['genAnalogOutput', CLUSTER]);
 
             // Report PresentValue on change (>=1 step) every 1..60s
@@ -251,43 +275,26 @@ const definition = {
             await ep.read(CLUSTER, ['maxSteps']);
         }
 
-        // Climate endpoint — present only on GALOPED_CLIMATE=1 builds.
-        // Wrap in try/catch so a non-climate variant doesn't fail interview.
-        const climateEp = device.getEndpoint(30);
+        const climateEp = device.getEndpoint(EP_CLIMATE);
         if (climateEp) {
-            try {
-                await reporting.bind(climateEp, coordinatorEndpoint,
-                    ['msTemperatureMeasurement', 'msRelativeHumidity', 'msPressureMeasurement']);
-                // Temperature: every 30..300 s, on >= 0.1 °C change
-                await reporting.temperature(climateEp,
-                    {min: 30, max: 300, change: 10});
-                // Humidity: every 30..300 s, on >= 1 %RH change
-                await reporting.humidity(climateEp,
-                    {min: 30, max: 300, change: 100});
-                // Pressure: every 60..600 s, on >= 1 hPa change
-                await reporting.pressure(climateEp,
-                    {min: 60, max: 600, change: 1});
-            } catch (err) {
-                logger.warn(`Climate EP 30 binding failed (firmware without GALOPED_CLIMATE?): ${err.message}`);
-            }
+            await reporting.bind(climateEp, coordinatorEndpoint,
+                ['msTemperatureMeasurement', 'msRelativeHumidity', 'msPressureMeasurement']);
+            await reporting.temperature(climateEp, {min: 30, max: 300, change: 10});
+            await reporting.humidity(climateEp, {min: 30, max: 300, change: 100});
+            await reporting.pressure(climateEp, {min: 60, max: 600, change: 1});
         }
 
-        // CO2 endpoint — present only on GALOPED_CO2=1 builds.
-        const co2Ep = device.getEndpoint(40);
+        const co2Ep = device.getEndpoint(EP_CO2);
         if (co2Ep) {
-            try {
-                await reporting.bind(co2Ep, coordinatorEndpoint, ['msCO2']);
-                // measuredValue is a fraction of 1 (1000 ppm = 0.001).
-                // Report every 30..600 s on >= 50 ppm change.
-                await co2Ep.configureReporting('msCO2', [{
-                    attribute: 'measuredValue',
-                    minimumReportInterval: 30,
-                    maximumReportInterval: 600,
-                    reportableChange: 0.00005,
-                }]);
-            } catch (err) {
-                logger.warn(`CO2 EP 40 binding failed (firmware without GALOPED_CO2?): ${err.message}`);
-            }
+            await reporting.bind(co2Ep, coordinatorEndpoint, ['msCO2']);
+            // measuredValue is a fraction of 1 (1000 ppm = 0.001).
+            // Report every 30..600 s on >= 50 ppm change.
+            await co2Ep.configureReporting('msCO2', [{
+                attribute: 'measuredValue',
+                minimumReportInterval: 30,
+                maximumReportInterval: 600,
+                reportableChange: 0.00005,
+            }]);
         }
     },
 };
