@@ -25,3 +25,5 @@ manual/*.out
 /firmware-zigbee/galoped/compile_commands.json
 /firmware-zigbee/galoped/.cache/
 /firmware-zigbee/galoped/.vscode/
+
+firmware-zigbee/zigbee2mqtt-data

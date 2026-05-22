@@ -11,6 +11,7 @@
 //   EP 20 — Drive 1 (Analog Output + custom cluster 0xFC10)
 //   EP 21 — Drive 2 (Analog Output + custom cluster 0xFC10)
 //   EP 30 — Climate sensor (Temperature/Humidity/Pressure, only on GALOPED_CLIMATE=1 builds)
+//   EP 40 — SenseAir S8 CO2 sensor (only on GALOPED_CO2=1 builds)
 //
 // Custom cluster 0xFC10 attributes:
 //   0x0000 position   (int32, RW, reportable) — absolute step count
@@ -48,21 +49,18 @@ function addDriveCluster(device) {
     });
 }
 
+// With meta.multiEndpoint=true, z2m attaches the endpoint suffix to outgoing
+// MQTT keys and strips it before tz lookup, so converters return *unsuffixed*
+// keys and tz uses bare keys like 'position' / 'reset'.
+
 const fzDrive = {
     cluster: CLUSTER,
     type: ['attributeReport', 'readResponse'],
     convert: (model, msg, publish, options, meta) => {
-        const suffix = msg.endpoint.ID === 20 ? '_drive_1' : '_drive_2';
         const result = {};
-        if (msg.data.position !== undefined) {
-            result['position' + suffix] = msg.data.position;
-        }
-        if (msg.data.isMoving !== undefined) {
-            result['is_moving' + suffix] = msg.data.isMoving !== 0;
-        }
-        if (msg.data.maxSteps !== undefined) {
-            result['max_steps' + suffix] = msg.data.maxSteps;
-        }
+        if (msg.data.position !== undefined) result.position = msg.data.position;
+        if (msg.data.isMoving !== undefined) result.is_moving = msg.data.isMoving !== 0;
+        if (msg.data.maxSteps !== undefined) result.max_steps = msg.data.maxSteps;
         return result;
     },
 };
@@ -72,51 +70,48 @@ const fzAnalogOutput = {
     type: ['attributeReport', 'readResponse'],
     convert: (model, msg, publish, options, meta) => {
         if (msg.data.presentValue === undefined) return;
-        const suffix = msg.endpoint.ID === 20 ? '_drive_1' : '_drive_2';
-        return {['position' + suffix]: Math.round(msg.data.presentValue)};
+        return {position: Math.round(msg.data.presentValue)};
     },
 };
 
 const tzPosition = {
-    key: ['position_drive_1', 'position_drive_2'],
+    key: ['position'],
     convertSet: async (entity, key, value, meta) => {
-        const endpointId = key === 'position_drive_1' ? 20 : 21;
-        const endpoint = meta.device.getEndpoint(endpointId);
         const steps = Number(value) | 0;
         // Write the standard Analog Output PresentValue. The firmware mirrors
         // it onto the custom cluster, so both stay in sync.
-        await endpoint.write('genAnalogOutput', {presentValue: steps});
-        return {state: {[key]: steps}};
+        await entity.write('genAnalogOutput', {presentValue: steps});
+        return {state: {position: steps}};
     },
     convertGet: async (entity, key, meta) => {
-        const endpointId = key === 'position_drive_1' ? 20 : 21;
-        const endpoint = meta.device.getEndpoint(endpointId);
-        await endpoint.read('genAnalogOutput', ['presentValue']);
+        await entity.read('genAnalogOutput', ['presentValue']);
     },
 };
 
 const tzReset = {
-    key: ['reset_drive_1', 'reset_drive_2'],
+    key: ['reset'],
     convertSet: async (entity, key, value, meta) => {
-        const endpointId = key === 'reset_drive_1' ? 20 : 21;
-        const endpoint = meta.device.getEndpoint(endpointId);
-        await endpoint.command(CLUSTER, 'reset', {});
+        await entity.command(CLUSTER, 'reset', {});
         return {};
     },
 };
 
-const driveExposes = (suffix, maxSteps) => [
-    e.numeric('position' + suffix, ea.ALL)
+const driveExposes = (endpointName, maxSteps) => [
+    e.numeric('position', ea.ALL)
         .withValueMin(0)
         .withValueMax(maxSteps)
         .withUnit('steps')
-        .withDescription('Drive absolute position'),
-    e.binary('is_moving' + suffix, ea.STATE, true, false)
-        .withDescription('Drive is currently moving'),
-    e.numeric('max_steps' + suffix, ea.STATE)
-        .withDescription('Drive max steps (from firmware)'),
-    e.enum('reset' + suffix, ea.SET, ['reset'])
-        .withDescription('Run blocking zero/calibration sweep'),
+        .withDescription('Drive absolute position')
+        .withEndpoint(endpointName),
+    e.binary('is_moving', ea.STATE, true, false)
+        .withDescription('Drive is currently moving')
+        .withEndpoint(endpointName),
+    e.numeric('max_steps', ea.STATE)
+        .withDescription('Drive max steps (from firmware)')
+        .withEndpoint(endpointName),
+    e.enum('reset', ea.SET, ['reset'])
+        .withDescription('Run blocking zero/calibration sweep')
+        .withEndpoint(endpointName),
 ];
 
 const definition = {
@@ -130,6 +125,7 @@ const definition = {
         drive_1: 20,
         drive_2: 21,
         climate: 30,
+        co2: 40,
     }),
 
     meta: {multiEndpoint: true},
@@ -142,29 +138,31 @@ const definition = {
         fz.on_off, fz.brightness, fz.color_colortemp,
         fzAnalogOutput, fzDrive,
         fz.temperature, fz.humidity, fz.pressure,
+        fz.co2,
     ],
 
     toZigbee: [
-        tz.on_off, tz.light_brightness, tz.light_color,
+        tz.on_off, tz.light_onoff_brightness, tz.light_color,
         tzPosition, tzReset,
     ],
 
     exposes: [
         e.light()
             .withBrightness()
-            .withColorHS()
-            .withColorXY()
+            .withColor(['hs', 'xy'])
             .withEndpoint('light'),
         // maxSteps in the converter only constrains the UI slider — the firmware
         // also clamps server-side. Adjust if you change Config::maxSteps.
-        ...driveExposes('_drive_1', 3950),
-        ...driveExposes('_drive_2', 3295),
+        ...driveExposes('drive_1', 3950),
+        ...driveExposes('drive_2', 3295),
         // Climate endpoint — exposed only on firmware built with GALOPED_CLIMATE=1.
         // If absent on a given board, the device simply never reports these and
         // z2m will show them as unavailable (no harm to non-climate variants).
         e.temperature().withEndpoint('climate'),
         e.humidity().withEndpoint('climate'),
         e.pressure().withEndpoint('climate'),
+        // CO2 endpoint — only on GALOPED_CO2=1 builds.
+        e.co2().withEndpoint('co2'),
     ],
 
     configure: async (device, coordinatorEndpoint, logger) => {
@@ -226,6 +224,24 @@ const definition = {
                     {min: 60, max: 600, change: 1});
             } catch (err) {
                 logger.warn(`Climate EP 30 binding failed (firmware without GALOPED_CLIMATE?): ${err.message}`);
+            }
+        }
+
+        // CO2 endpoint — present only on GALOPED_CO2=1 builds.
+        const co2Ep = device.getEndpoint(40);
+        if (co2Ep) {
+            try {
+                await reporting.bind(co2Ep, coordinatorEndpoint, ['msCO2']);
+                // measuredValue is a fraction of 1 (1000 ppm = 0.001).
+                // Report every 30..600 s on >= 50 ppm change.
+                await co2Ep.configureReporting('msCO2', [{
+                    attribute: 'measuredValue',
+                    minimumReportInterval: 30,
+                    maximumReportInterval: 600,
+                    reportableChange: 0.00005,
+                }]);
+            } catch (err) {
+                logger.warn(`CO2 EP 40 binding failed (firmware without GALOPED_CO2?): ${err.message}`);
             }
         }
     },
