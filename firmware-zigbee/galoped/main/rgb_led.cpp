@@ -2,10 +2,21 @@
 
 #include "esp_log.h"
 #include "led_strip_spi.h"
+#include "nvs.h"
 
 #include <cmath>
 
 static const char *TAG = "LED";
+
+namespace
+{
+constexpr const char *NVS_NS = "rgbled";
+constexpr const char *NVS_KEY = "state";
+// Bump if PersistedState layout changes — old blobs will be ignored.
+constexpr uint32_t SAVE_MAGIC = 0x52474201;  // 'RGB' v1
+// Coalesce rapid updates (slider drags emit many writes).
+constexpr uint64_t SAVE_DELAY_US = 2'000'000;
+}  // namespace
 
 RgbLed::RgbLed(gpio_num_t data_gpio, spi_host_device_t spi_host, uint32_t led_count)
     : pin_(data_gpio),
@@ -15,12 +26,19 @@ RgbLed::RgbLed(gpio_num_t data_gpio, spi_host_device_t spi_host, uint32_t led_co
       on_(false),
       brightness_(255),
       color_x_(0x616b),  // ESP_ZB_ZCL_COLOR_CONTROL_CURRENT_X_DEF_VALUE
-      color_y_(0x607d)   // ESP_ZB_ZCL_COLOR_CONTROL_CURRENT_Y_DEF_VALUE
+      color_y_(0x607d),  // ESP_ZB_ZCL_COLOR_CONTROL_CURRENT_Y_DEF_VALUE
+      save_timer_(nullptr)
 {
 }
 
 RgbLed::~RgbLed()
 {
+    if (save_timer_) {
+        // Flush any pending change before tearing down.
+        esp_timer_stop(save_timer_);
+        save_state();
+        esp_timer_delete(save_timer_);
+    }
     if (strip_) {
         led_strip_del(strip_);
     }
@@ -48,19 +66,94 @@ esp_err_t RgbLed::init()
 
     led_strip_clear(strip_);
     ESP_LOGI(TAG, "init gpio=%d host=%d leds=%lu", pin_, spi_host_, (unsigned long)led_count_);
+
+    esp_timer_create_args_t targs = {};
+    targs.callback = &RgbLed::save_cb;
+    targs.dispatch_method = ESP_TIMER_TASK;
+    targs.arg = this;
+    targs.name = "rgb_save";
+    if (esp_timer_create(&targs, &save_timer_) != ESP_OK) {
+        ESP_LOGW(TAG, "save timer create failed; persistence disabled");
+        save_timer_ = nullptr;
+    }
+
+    if (load_state() == ESP_OK) {
+        render();  // restore the saved appearance immediately
+    }
     return ESP_OK;
+}
+
+esp_err_t RgbLed::load_state()
+{
+    nvs_handle_t h;
+    esp_err_t err = nvs_open(NVS_NS, NVS_READONLY, &h);
+    if (err != ESP_OK) {
+        // Namespace doesn't exist on first boot — silent.
+        return err;
+    }
+    PersistedState s = {};
+    size_t sz = sizeof(s);
+    err = nvs_get_blob(h, NVS_KEY, &s, &sz);
+    nvs_close(h);
+
+    if (err != ESP_OK || sz != sizeof(s) || s.magic != SAVE_MAGIC) {
+        return ESP_ERR_NOT_FOUND;
+    }
+    on_ = s.on;
+    brightness_ = s.brightness;
+    color_x_ = s.color_x;
+    color_y_ = s.color_y;
+    ESP_LOGI(TAG, "restored: on=%d bri=%u xy=%u,%u", on_, brightness_, color_x_, color_y_);
+    return ESP_OK;
+}
+
+esp_err_t RgbLed::save_state()
+{
+    nvs_handle_t h;
+    esp_err_t err = nvs_open(NVS_NS, NVS_READWRITE, &h);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "nvs_open(rw): %s", esp_err_to_name(err));
+        return err;
+    }
+    PersistedState s = {SAVE_MAGIC, on_, brightness_, color_x_, color_y_};
+    err = nvs_set_blob(h, NVS_KEY, &s, sizeof(s));
+    if (err == ESP_OK) {
+        err = nvs_commit(h);
+    }
+    nvs_close(h);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "save failed: %s", esp_err_to_name(err));
+    }
+    return err;
+}
+
+void RgbLed::schedule_save()
+{
+    if (!save_timer_)
+        return;
+    // Restart the one-shot so a burst of writes coalesces into a single flush
+    // SAVE_DELAY_US after the last change.
+    esp_timer_stop(save_timer_);
+    esp_timer_start_once(save_timer_, SAVE_DELAY_US);
+}
+
+void RgbLed::save_cb(void *arg)
+{
+    static_cast<RgbLed *>(arg)->save_state();
 }
 
 void RgbLed::set_on(bool on)
 {
     on_ = on;
     render();
+    schedule_save();
 }
 
 void RgbLed::set_brightness(uint8_t brightness)
 {
     brightness_ = brightness;
     render();
+    schedule_save();
 }
 
 void RgbLed::set_xy(uint16_t color_x, uint16_t color_y)
@@ -68,6 +161,7 @@ void RgbLed::set_xy(uint16_t color_x, uint16_t color_y)
     color_x_ = color_x;
     color_y_ = color_y;
     render();
+    schedule_save();
 }
 
 void RgbLed::render()

@@ -2,6 +2,7 @@
 
 #include "driver/spi_common.h"
 #include "esp_err.h"
+#include "esp_timer.h"
 #include "hal/gpio_types.h"
 #include "led_strip.h"
 
@@ -10,6 +11,16 @@
 class RgbLed
 {
    public:
+    // Blob persisted to NVS. `magic` lets us reject stale layouts after a
+    // schema change without versioning gymnastics — bump the constant.
+    struct PersistedState {
+        uint32_t magic;
+        bool on;
+        uint8_t brightness;
+        uint16_t color_x;
+        uint16_t color_y;
+    };
+
     RgbLed(gpio_num_t data_gpio, spi_host_device_t spi_host = SPI2_HOST, uint32_t led_count = 1);
     ~RgbLed();
 
@@ -46,6 +57,11 @@ class RgbLed
     void render();
     static void xy_to_rgb(uint16_t x16, uint16_t y16, uint8_t bri, uint8_t &r, uint8_t &g, uint8_t &b);
 
+    esp_err_t load_state();
+    esp_err_t save_state();
+    void schedule_save();
+    static void save_cb(void *arg);
+
     gpio_num_t pin_;
     spi_host_device_t spi_host_;
     uint32_t led_count_;
@@ -56,4 +72,6 @@ class RgbLed
     uint8_t brightness_;
     uint16_t color_x_;
     uint16_t color_y_;
+
+    esp_timer_handle_t save_timer_;
 };
