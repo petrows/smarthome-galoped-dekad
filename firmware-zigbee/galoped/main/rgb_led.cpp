@@ -116,20 +116,45 @@ void RgbLed::render()
 
 void RgbLed::xy_to_rgb(uint16_t x16, uint16_t y16, uint8_t bri, uint8_t &r, uint8_t &g, uint8_t &b)
 {
-    // Zigbee CurrentX/Y are uint16 representing CIE 1931 chromaticity 0..1
+    // Zigbee CurrentX/Y are uint16 representing CIE 1931 chromaticity 0..1.
+    // Convert at unit luminance, normalize the channel max to 1, *then* apply
+    // brightness — otherwise saturated chromaticities clip in gamma() and
+    // brightness only has effect over a narrow low-end window.
     float x = x16 / 65535.0f;
     float y = y16 / 65535.0f;
     if (y < 1e-4f) {
         y = 1e-4f;
     }
-    float Y = bri / 255.0f;
-    float X = (Y / y) * x;
-    float Z = (Y / y) * (1.0f - x - y);
+    float X = x / y;
+    float Z = (1.0f - x - y) / y;
 
-    // CIE XYZ -> linear sRGB (D65)
-    float lr = X * 3.2404542f - Y * 1.5371385f - Z * 0.4985314f;
-    float lg = -X * 0.9692660f + Y * 1.8760108f + Z * 0.0415560f;
-    float lb = X * 0.0556434f - Y * 0.2040259f + Z * 1.0572252f;
+    // CIE XYZ -> linear sRGB (D65), with Y = 1
+    float lr = X * 3.2404542f - 1.5371385f - Z * 0.4985314f;
+    float lg = -X * 0.9692660f + 1.8760108f + Z * 0.0415560f;
+    float lb = X * 0.0556434f - 0.2040259f + Z * 1.0572252f;
+
+    if (lr < 0.0f)
+        lr = 0.0f;
+    if (lg < 0.0f)
+        lg = 0.0f;
+    if (lb < 0.0f)
+        lb = 0.0f;
+
+    float m = lr;
+    if (lg > m)
+        m = lg;
+    if (lb > m)
+        m = lb;
+    if (m > 1.0f) {
+        lr /= m;
+        lg /= m;
+        lb /= m;
+    }
+
+    float bf = bri / 255.0f;
+    lr *= bf;
+    lg *= bf;
+    lb *= bf;
 
     auto gamma = [](float v) -> float {
         if (v <= 0.0f) {

@@ -16,7 +16,6 @@
 // Custom cluster 0xFC10 attributes:
 //   0x0000 position   (int32, RW, reportable) — absolute step count
 //   0x0001 max_steps  (uint16, RO)            — driver max-steps cap
-//   0x0002 is_moving  (bool, RO, reportable)
 // Custom command 0x00 reset                   — runs the blocking zero() routine
 
 const {Zcl} = require('zigbee-herdsman');
@@ -72,7 +71,6 @@ const fzDrive = {
         const s = endpointSuffix(msg, model);
         const result = {};
         if (msg.data.position !== undefined) result['position' + s] = msg.data.position;
-        if (msg.data.isMoving !== undefined) result['is_moving' + s] = msg.data.isMoving !== 0;
         if (msg.data.maxSteps !== undefined) {
             result['max_steps' + s] = msg.data.maxSteps;
             // exposes() reads this value to set the position slider's max — ask z2m
@@ -140,9 +138,6 @@ const driveExposes = (endpointName, maxSteps) => [
         .withUnit('steps')
         .withDescription('Drive absolute position')
         .withEndpoint(endpointName),
-    e.binary('is_moving', ea.STATE, true, false)
-        .withDescription('Drive is currently moving')
-        .withEndpoint(endpointName),
     e.numeric('max_steps', ea.STATE)
         .withDescription('Drive max steps (from firmware)')
         .withEndpoint(endpointName),
@@ -208,7 +203,7 @@ const definition = {
         return [
             e.light()
                 .withBrightness()
-                .withColor(['hs', 'xy'])
+                .withColor(['xy'])
                 .withEndpoint('light'),
             ...driveExposes('drive_1', driveMax(20)),
             ...driveExposes('drive_2', driveMax(21)),
@@ -250,14 +245,6 @@ const definition = {
                 minimumReportInterval: 1,
                 maximumReportInterval: 60,
                 reportableChange: 1,
-            }]);
-
-            // Report IsMoving on any change, 0..300s
-            await ep.configureReporting(CLUSTER, [{
-                attribute: 'isMoving',
-                minimumReportInterval: 0,
-                maximumReportInterval: 300,
-                reportableChange: 0,
             }]);
 
             // One-shot read so MaxSteps lands in state
