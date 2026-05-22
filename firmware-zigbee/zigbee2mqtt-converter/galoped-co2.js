@@ -73,7 +73,12 @@ const fzDrive = {
         const result = {};
         if (msg.data.position !== undefined) result['position' + s] = msg.data.position;
         if (msg.data.isMoving !== undefined) result['is_moving' + s] = msg.data.isMoving !== 0;
-        if (msg.data.maxSteps !== undefined) result['max_steps' + s] = msg.data.maxSteps;
+        if (msg.data.maxSteps !== undefined) {
+            result['max_steps' + s] = msg.data.maxSteps;
+            // exposes() reads this value to set the position slider's max — ask z2m
+            // to re-emit exposes so the UI picks up the new bound.
+            meta.deviceExposesChanged?.();
+        }
         return result;
     },
 };
@@ -178,24 +183,45 @@ const definition = {
         tzPosition, tzReset,
     ],
 
-    exposes: [
-        e.light()
-            .withBrightness()
-            .withColor(['hs', 'xy'])
-            .withEndpoint('light'),
-        // maxSteps in the converter only constrains the UI slider — the firmware
-        // also clamps server-side. Adjust if you change Config::maxSteps.
-        ...driveExposes('drive_1', 3950),
-        ...driveExposes('drive_2', 3295),
-        // Climate endpoint — exposed only on firmware built with GALOPED_CLIMATE=1.
-        // If absent on a given board, the device simply never reports these and
-        // z2m will show them as unavailable (no harm to non-climate variants).
-        e.temperature().withEndpoint('climate'),
-        e.humidity().withEndpoint('climate'),
-        e.pressure().withEndpoint('climate'),
-        // CO2 endpoint — only on GALOPED_CO2=1 builds.
-        e.co2().withEndpoint('co2'),
-    ],
+    // Exposes computed dynamically so position sliders honor each drive's
+    // maxSteps as reported by the firmware (custom cluster attribute 0x0001).
+    // configure() does a one-shot read of maxSteps; later refreshes pick up
+    // any firmware change. Falls back to U16 max if the value isn't cached
+    // yet (e.g. during initial discovery before interview completes).
+    exposes: (device, options) => {
+        // Bridge calls exposes() at startup before onEvent has fired, so the
+        // custom cluster name isn't resolvable yet — register it here too.
+        if (device && typeof device.addCustomCluster === 'function') {
+            addDriveCluster(device);
+        }
+        const driveMax = (epId) => {
+            try {
+                const ep = device && typeof device.getEndpoint === 'function'
+                    ? device.getEndpoint(epId) : undefined;
+                const v = ep && ep.getClusterAttributeValue
+                    ? ep.getClusterAttributeValue(CLUSTER, 'maxSteps') : undefined;
+                return typeof v === 'number' && v > 0 ? v : 65535;
+            } catch (_e) {
+                return 65535;
+            }
+        };
+        return [
+            e.light()
+                .withBrightness()
+                .withColor(['hs', 'xy'])
+                .withEndpoint('light'),
+            ...driveExposes('drive_1', driveMax(20)),
+            ...driveExposes('drive_2', driveMax(21)),
+            // Climate endpoint — exposed only on firmware built with GALOPED_CLIMATE=1.
+            // If absent on a given board, the device simply never reports these and
+            // z2m will show them as unavailable (no harm to non-climate variants).
+            e.temperature().withEndpoint('climate'),
+            e.humidity().withEndpoint('climate'),
+            e.pressure().withEndpoint('climate'),
+            // CO2 endpoint — only on GALOPED_CO2=1 builds.
+            e.co2().withEndpoint('co2'),
+        ];
+    },
 
     configure: async (device, coordinatorEndpoint, logger) => {
         addDriveCluster(device);
