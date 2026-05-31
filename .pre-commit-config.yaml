@@ -16,3 +16,4 @@ repos:
     hooks:
       - id: markdownlint
         files: ^doc/.*\.md$
+        args: ["--config", ".markdownlint.yaml", "--fix"]
