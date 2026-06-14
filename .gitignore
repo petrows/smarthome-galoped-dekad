@@ -2,6 +2,7 @@
 *.FCStd?*
 *.FCBak*
 
+.claude
 .venv
 
 /tmp/
